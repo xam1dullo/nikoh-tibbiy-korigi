@@ -536,8 +536,24 @@
   <p style="font-size: 0.75rem; color: #4b5563; margin-top: 0.4rem;">Nikoh tibbiy ko'rigi xizmati — Barcha huquqlar himoyalangan</p>
 </footer>
 
+<!-- GeoJSON Data Files -->
+<script type="text/javascript" src="data/regions.js"></script>
+<script type="text/javascript" src="data/qoraqalpogiston.js"></script>
+<script type="text/javascript" src="data/andijon.js"></script>
+<script type="text/javascript" src="data/buxoro.js"></script>
+<script type="text/javascript" src="data/fargona.js"></script>
+<script type="text/javascript" src="data/jizzax.js"></script>
+<script type="text/javascript" src="data/namangan.js"></script>
+<script type="text/javascript" src="data/navoiy.js"></script>
+<script type="text/javascript" src="data/qashqadaryo.js"></script>
+<script type="text/javascript" src="data/samarqand.js"></script>
+<script type="text/javascript" src="data/sirdaryo.js"></script>
+<script type="text/javascript" src="data/surxondaryo.js"></script>
+<script type="text/javascript" src="data/toshkent.js"></script>
+<script type="text/javascript" src="data/xorazm.js"></script>
+
 <script>
-// ─── APP DATA ───
+// ─── APP DATA (hardcoded REGIONS — endi GeoJSON dan olinadi) ───
 const REGIONS = {
   toshkent_shahar: {
     name: "Toshkent shahri",
@@ -805,131 +821,6 @@ const REGIONS = {
   }
 };
 
-const MIROBOD_DATA = {
-  dispensaries: [
-    {
-      id: 1,
-      title: "🔬 Dermatovenerolog",
-      subtitle: "8-sonli Tumanlararo Teri-tanosil kasalliklar dispanseri",
-      address: "Yashnobod tumani, Zoxidov ko'chasi, 8-uy",
-      addressNote: "(Jarqo'rg'on, Davr bekati)",
-      hours: "08:00 – 12:00",
-      phones: ["71-291-47-80", "71-291-33-71"],
-      coords: [41.3672, 69.3116]
-    },
-    {
-      id: 2,
-      title: "🫁 Ftiziator",
-      subtitle: "5-son Tumanlararo Ftiziateriya dispanseri",
-      address: "Mirobod tumani, 8-Mart ko'chasi, 59-uy",
-      hours: "08:00 – 16:00",
-      phones: ["71-283-98-81"],
-      coords: [41.2809, 69.2954]
-    },
-    {
-      id: 3,
-      title: "🧠 Psixiatr",
-      subtitle: "2-son Shahar Ruhiy-asab kasalliklari dispanseri",
-      address: "Yashnobod tumani, Qorasuv ko'chasi, 25-uy",
-      addressNote: "(Lisunova, Dvorets Aviastroiteley)",
-      hours: "08:00 – 16:00",
-      phones: ["71-294-74-65"],
-      coords: [41.2939, 69.3400]
-    },
-    {
-      id: 4,
-      title: "💊 Narkolog",
-      subtitle: "Narkologiya dispanseri — Toshkent shahar filiali (RIRSITMNB)",
-      address: "Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy",
-      addressNote: "(Nuroniylar sanatoriyasi yaqinida)",
-      hours: "08:00 – 15:00",
-      coords: [41.3804, 69.3166]
-    }
-  ],
-  polyclinicTests: [
-    {
-      step: 1,
-      name: "OIV tekshiruvi (117-kod)",
-      location: "🚪 1-qavat, 14a-xona",
-      tag: "Du/Chor/Ju 08–09",
-      special: true
-    },
-    {
-      step: 2,
-      name: "Umumiy qon va qondagi qand",
-      location: "🚪 2-qavat, 35-xona",
-      tag: "Laboratoriya"
-    },
-    {
-      step: 3,
-      name: "EKG (elektrokardiogramma)",
-      location: "🚪 2-qavat, 32-xona",
-      tag: "Yurak"
-    },
-    {
-      step: 4,
-      name: "UTT tekshiruvi (ultratovush)",
-      location: "🚪 1-qavat, 14-xona",
-      tag: "Ultratovush"
-    },
-    {
-      step: 5,
-      name: "Ginekolog",
-      location: "🚪 2-qavat, 17-xona",
-      tag: "Ayollar"
-    },
-    {
-      step: 6,
-      name: "Urolog",
-      location: "🚪 2-qavat, 30-xona",
-      tag: "Erkaklar"
-    },
-    {
-      step: 7,
-      name: "Endokrinolog",
-      location: "🚪 2-qavat, 24-xona",
-      tag: "Gormon"
-    },
-    {
-      step: 8,
-      name: "Revmatolog",
-      location: "🚪 2-qavat, 29-xona",
-      tag: "Bo'g'im"
-    }
-  ],
-  conclusion: {
-    location: "Mirobod TTB MKP — 3-qavat, 49-xona",
-    description: "Barcha dispanser va poliklinika ma'lumotnomalarini olib keling. Shu yerda yakuniy tibbiy xulosa beriladi."
-  },
-  contact: {
-    name: "Mirobod TTB — Masul Shaxs",
-    description: "Nikoh tibbiy ko'rigi bo'yicha barcha savollaringizga javob beramiz",
-    telegram: "MN_889G"
-  },
-  faq: [
-    {
-      question: "📋 Qanday hujjatlar kerak?",
-      answer: "Pasport asl nusxasi va fotokopiyasi, propiska (ro'yxatdan o'tish) fotokopiyasi. Ayrim joylar qo'shimcha hujjat so'rashi mumkin."
-    },
-    {
-      question: "⏱️ Hammasi qancha vaqt oladi?",
-      answer: "Odatda 2–4 kun. Dispanserlarga alohida kunlarda borish qulay. Poliklinika tekshiruvlarini bir kunda o'tish mumkin, lekin OIV uchun faqat Du/Chor/Juma kunlari boring."
-    },
-    {
-      question: "💰 Tekshiruvlar pulli yoki beplatmi?",
-      answer: "Asosiy tibbiy ko'rik bepul. Lekin ba'zi dispanserlarda hujjat rasmiylashtiruvi uchun to'lov bo'lishi mumkin. Aniq ma'lumot uchun masul shaxs bilan bog'laning."
-    },
-    {
-      question: "🕐 Qaysi dispanserlarga avval borish kerak?",
-      answer: "Ketma-ketlik muhim emas. Lekin <strong>Dermatovenerolog</strong>ga 08:00–12:00 orasida boring (qabul vaqti qisqa). Narkolog 08:00–15:00 gacha."
-    },
-    {
-      question: "📞 Savollarim bo'lsa kimga murojaat qilaman?",
-      answer: "Quyidagi \"Bog'lanish\" bo'limidagi telefon yoki Telegram orqali masul shaxs bilan bog'laning. Javob vaqti — ish kuni soatlari ichida."
-    }
-  ]
-};
-
 // ─── APP STATE ───
 let map = null;
 let currentView = 'main';
@@ -937,6 +828,61 @@ let currentRegion = null;
 let currentDistrict = null;
 let geojsonLayer = null;
 let searchData = [];
+let mapLevel = 'regions'; // 'regions' or region key
+
+// GeoJSON paths mapping
+const GEOJSON_PATHS = {
+  regions: typeof regions !== 'undefined' ? regions : null,
+  qoraqalpogiston: typeof qoraqalpogiston !== 'undefined' ? qoraqalpogiston : null,
+  andijon: typeof andijon !== 'undefined' ? andijon : null,
+  buxoro: typeof buxoro !== 'undefined' ? buxoro : null,
+  fargona: typeof fargona !== 'undefined' ? fargona : null,
+  jizzax: typeof jizzax !== 'undefined' ? jizzax : null,
+  namangan: typeof namangan !== 'undefined' ? namangan : null,
+  navoiy: typeof navoiy !== 'undefined' ? navoiy : null,
+  qashqadaryo: typeof qashqadaryo !== 'undefined' ? qashqadaryo : null,
+  samarqand: typeof samarqand !== 'undefined' ? samarqand : null,
+  sirdaryo: typeof sirdaryo !== 'undefined' ? sirdaryo : null,
+  surxondaryo: typeof surxondaryo !== 'undefined' ? surxondaryo : null,
+  toshkent: typeof toshkent !== 'undefined' ? toshkent : null,
+  xorazm: typeof xorazm !== 'undefined' ? xorazm : null
+};
+
+// Region name → REGIONS key mapping (from GeoJSON feature name)
+const REGION_NAME_MAP = {
+  'toshkent sh.': 'toshkent_shahar',
+  'toshkent vil.': 'toshkent_viloyat',
+  'andijon vil.': 'andijon',
+  'buxoro vil.': 'buxoro',
+  "farg'ona vil.": 'fargona',
+  'jizzax vil.': 'jizzax',
+  'xorazm vil.': 'xorazm',
+  'namangan vil.': 'namangan',
+  'navoiy vil.': 'navoiy',
+  'qashqadaryo vil.': 'qashqadaryo',
+  'samarqand vil.': 'samarqand',
+  'sirdaryo vil.': 'sirdaryo',
+  'surxondaryo vil.': 'surxondaryo',
+  "qoraqalpog'iston res.": 'qoraqalpogiston'
+};
+
+// Region key → GeoJSON path key (for district drill-down)
+const REGION_GEOJSON_MAP = {
+  toshkent_shahar: 'toshkent',
+  toshkent_viloyat: 'toshkent',
+  andijon: 'andijon',
+  buxoro: 'buxoro',
+  fargona: 'fargona',
+  jizzax: 'jizzax',
+  xorazm: 'xorazm',
+  namangan: 'namangan',
+  navoiy: 'navoiy',
+  qashqadaryo: 'qashqadaryo',
+  samarqand: 'samarqand',
+  sirdaryo: 'sirdaryo',
+  surxondaryo: 'surxondaryo',
+  qoraqalpogiston: 'qoraqalpogiston'
+};
 
 // ─── INITIALIZE APP ───
 document.addEventListener('DOMContentLoaded', function() {
@@ -956,90 +902,92 @@ function initializeMap() {
   const mapDiv = document.getElementById('map');
   mapDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Xarita yuklanmoqda...</div></div>';
 
-  // Initialize Leaflet map
   map = L.map('map', {
     center: [41.3, 64.5],
     zoom: 6,
     zoomControl: true
   });
 
-  // Add tile layer (OpenStreetMap)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 18
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
-  // Load GeoJSON data
-  loadGeoJSONData();
+  showRegionsOnMap();
 }
 
-function loadGeoJSONData() {
-  const geojsonUrl = 'data/uzbekistan.json';
+// ─── COLORS ───
+const MAP_COLORS = [
+  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+  '#F8C471', '#82E0AA', '#F1948A', '#AED6F1', '#D2B4DE'
+];
 
-  fetch(geojsonUrl)
-    .then(response => {
-      if (!response.ok) throw new Error('HTTP error ' + response.status);
-      return response.json();
-    })
-    .then(data => {
-      renderMapData(data);
-    })
-    .catch(error => {
-      console.error('GeoJSON yuklanmadi:', error);
-      showMapFallback();
-    });
+function getRegionColor(index) {
+  return MAP_COLORS[index % MAP_COLORS.length];
 }
 
-function renderMapData(geojsonData) {
-  const colors = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-    '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D2B4DE'
-  ];
+// ─── SHOW REGIONS ON MAP ───
+function showRegionsOnMap() {
+  if (!GEOJSON_PATHS.regions) {
+    showMapFallback();
+    return;
+  }
 
+  if (geojsonLayer) {
+    map.removeLayer(geojsonLayer);
+  }
+
+  mapLevel = 'regions';
   let colorIndex = 0;
 
-  geojsonLayer = L.geoJSON(geojsonData, {
+  geojsonLayer = L.geoJSON(GEOJSON_PATHS.regions, {
     style: function(feature) {
       return {
-        fillColor: colors[colorIndex++ % colors.length],
+        fillColor: getRegionColor(colorIndex++),
         weight: 2,
         opacity: 1,
-        color: 'white',
+        color: '#75706f',
         dashArray: '3',
         fillOpacity: 0.7
       };
     },
     onEachFeature: function(feature, layer) {
-      const regionName = getRegionNameFromFeature(feature);
-      const regionKey = findRegionKey(regionName);
+      const name = (feature.properties.name || '').toLowerCase();
+      const regionKey = findRegionKeyFromGeoJSON(name);
+      const regionData = regionKey ? REGIONS[regionKey] : null;
+      const displayName = regionData ? regionData.name : feature.properties.name;
+      const districtCount = regionData ? regionData.districts.length : 0;
 
-      if (regionKey) {
-        const regionData = REGIONS[regionKey];
+      // Tooltip with region name
+      layer.bindTooltip(displayName, {
+        permanent: false,
+        direction: 'center',
+        className: 'info'
+      });
 
-        layer.bindPopup(`
-          <div style="font-family: 'Rubik', sans-serif;">
-            <h3 style="margin: 0 0 0.5rem; font-size: 1rem;">${regionData.name}</h3>
-            <p style="margin: 0; font-size: 0.85rem; color: #666;">${regionData.districts.length} ta tuman</p>
-          </div>
-        `);
-
-        layer.on({
-          mouseover: function(e) {
-            this.setStyle({
-              weight: 3,
-              color: '#1a73e8',
-              fillOpacity: 0.9
-            });
-          },
-          mouseout: function(e) {
-            geojsonLayer.resetStyle(this);
-          },
-          click: function(e) {
+      layer.on({
+        mouseover: function(e) {
+          this.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.85
+          });
+          this.bringToFront();
+        },
+        mouseout: function(e) {
+          geojsonLayer.resetStyle(this);
+        },
+        click: function(e) {
+          if (regionKey) {
+            // Zoom to region and show districts on map
+            map.fitBounds(this.getBounds());
+            showDistrictsOnMap(regionKey);
             showRegionView(regionKey);
           }
-        });
-      }
+        }
+      });
     }
   });
 
@@ -1047,57 +995,132 @@ function renderMapData(geojsonData) {
   map.fitBounds(geojsonLayer.getBounds());
 }
 
-function getRegionNameFromFeature(feature) {
-  const props = feature.properties;
-  return props.name_uz || props.name || props.ADM1_UZ || props.ADM1_EN || props.NAME_1 || '';
+// ─── SHOW DISTRICTS ON MAP ───
+function showDistrictsOnMap(regionKey) {
+  const geoKey = REGION_GEOJSON_MAP[regionKey];
+  const districtGeoJSON = geoKey ? GEOJSON_PATHS[geoKey] : null;
+
+  if (!districtGeoJSON) return;
+
+  if (geojsonLayer) {
+    map.removeLayer(geojsonLayer);
+  }
+
+  mapLevel = regionKey;
+  let colorIndex = 0;
+
+  geojsonLayer = L.geoJSON(districtGeoJSON, {
+    style: function(feature) {
+      return {
+        fillColor: getRegionColor(colorIndex++),
+        weight: 2,
+        opacity: 1,
+        color: '#75706f',
+        dashArray: '3',
+        fillOpacity: 0.7
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      const districtName = feature.properties.name || '';
+
+      layer.bindTooltip(districtName, {
+        permanent: false,
+        direction: 'center',
+        className: 'info'
+      });
+
+      layer.on({
+        mouseover: function(e) {
+          this.setStyle({
+            weight: 5,
+            color: '#1a73e8',
+            dashArray: '',
+            fillOpacity: 0.85
+          });
+          this.bringToFront();
+        },
+        mouseout: function(e) {
+          geojsonLayer.resetStyle(this);
+        },
+        click: function(e) {
+          // Try to find matching district code
+          const districtCode = findDistrictCode(regionKey, districtName);
+          if (districtCode) {
+            showDistrictView(regionKey, districtCode);
+          }
+        }
+      });
+    }
+  });
+
+  geojsonLayer.addTo(map);
+  map.fitBounds(geojsonLayer.getBounds());
 }
 
-function findRegionKey(regionName) {
-  const normalized = regionName.toLowerCase().replace(/['\s-]/g, '');
+// ─── HELPER: find region key from GeoJSON feature name ───
+function findRegionKeyFromGeoJSON(featureName) {
+  const lower = featureName.toLowerCase().trim();
 
+  // Direct match
+  if (REGION_NAME_MAP[lower]) return REGION_NAME_MAP[lower];
+
+  // Fuzzy match
+  for (const [geoName, key] of Object.entries(REGION_NAME_MAP)) {
+    const geoFirst = geoName.split(' ')[0].replace(/[''ʻ]/g, '');
+    const featureFirst = lower.split(' ')[0].replace(/[''ʻ]/g, '');
+    if (geoFirst === featureFirst) return key;
+  }
+
+  // Fallback: try matching against REGIONS names
+  const normalized = lower.replace(/['\s\-.'ʻ]/g, '');
   const mappings = {
-    'toshkentshahri': 'toshkent_shahar',
-    'toshkentviloyati': 'toshkent_viloyat',
-    'andijonviloyati': 'andijon',
-    'buxoroviloyati': 'buxoro',
-    'fargonaviloyati': 'fargona',
-    'jizzaxviloyati': 'jizzax',
-    'xorazmviloyati': 'xorazm',
-    'namanganviloyati': 'namangan',
-    'navoiyviloyati': 'navoiy',
-    'qashqadaryoviloyati': 'qashqadaryo',
-    'samarqandviloyati': 'samarqand',
-    'sirdaryoviloyati': 'sirdaryo',
-    'surxondaryoviloyati': 'surxondaryo',
-    'qoraqalpogistonrespublikasi': 'qoraqalpogiston',
-    // Fallback shorter matches
-    'toshkent': 'toshkent_shahar',
-    'tashkent': 'toshkent_shahar',
-    'andijon': 'andijon',
-    'andijan': 'andijon',
-    'buxoro': 'buxoro',
-    'bukhara': 'buxoro',
-    'fargona': 'fargona',
-    'ferghana': 'fargona',
-    'jizzax': 'jizzax',
-    'xorazm': 'xorazm',
-    'khorezm': 'xorazm',
-    'namangan': 'namangan',
-    'navoiy': 'navoiy',
-    'qashqadaryo': 'qashqadaryo',
-    'samarqand': 'samarqand',
-    'sirdaryo': 'sirdaryo',
-    'surxondaryo': 'surxondaryo',
-    'qoraqalpogiston': 'qoraqalpogiston',
-    'karakalpakstan': 'qoraqalpogiston'
+    'toshkentshahri': 'toshkent_shahar', 'toshkentsh': 'toshkent_shahar',
+    'toshkentviloyati': 'toshkent_viloyat', 'toshkentvil': 'toshkent_viloyat',
+    'andijonvil': 'andijon', 'andijon': 'andijon',
+    'buxorovil': 'buxoro', 'buxoro': 'buxoro',
+    'fargonavil': 'fargona', 'fargona': 'fargona',
+    'jizzaxvil': 'jizzax', 'jizzax': 'jizzax',
+    'xorazmvil': 'xorazm', 'xorazm': 'xorazm',
+    'namanganvil': 'namangan', 'namangan': 'namangan',
+    'navoiyvil': 'navoiy', 'navoiy': 'navoiy',
+    'qashqadaryovil': 'qashqadaryo', 'qashqadaryo': 'qashqadaryo',
+    'samarqandvil': 'samarqand', 'samarqand': 'samarqand',
+    'sirdaryovil': 'sirdaryo', 'sirdaryo': 'sirdaryo',
+    'surxondaryovil': 'surxondaryo', 'surxondaryo': 'surxondaryo',
+    'qoraqalpogistonres': 'qoraqalpogiston', 'qoraqalpogiston': 'qoraqalpogiston'
   };
 
-  // Try exact match first (longer keys first)
   const sortedKeys = Object.keys(mappings).sort((a, b) => b.length - a.length);
   for (const key of sortedKeys) {
-    if (normalized.includes(key)) {
-      return mappings[key];
-    }
+    if (normalized.includes(key)) return mappings[key];
+  }
+
+  return null;
+}
+
+// ─── HELPER: find district code from GeoJSON name ───
+function findDistrictCode(regionKey, districtName) {
+  const region = REGIONS[regionKey];
+  if (!region) return null;
+
+  const lower = districtName.toLowerCase().replace(/[''ʻ\-.']/g, '').trim();
+
+  // Try exact match on code
+  for (const d of region.districts) {
+    if (d.code === lower) return d.code;
+  }
+
+  // Try matching first word
+  const firstWord = lower.split(/[\s.]/)[0];
+  for (const d of region.districts) {
+    const dFirst = d.name.toLowerCase().replace(/[''ʻ]/g, '').split(/[\s.]/)[0];
+    if (dFirst === firstWord) return d.code;
+  }
+
+  // Try includes
+  for (const d of region.districts) {
+    const dNorm = d.name.toLowerCase().replace(/[''ʻ\-.']/g, '');
+    if (dNorm.includes(firstWord) || firstWord.includes(dNorm.split(/\s/)[0])) return d.code;
   }
 
   return null;
@@ -1225,6 +1248,11 @@ function showMainView() {
   document.getElementById('searchInput').value = '';
   renderRegionsGrid();
 
+  // Reset map to show all regions
+  if (map && mapLevel !== 'regions') {
+    showRegionsOnMap();
+  }
+
   window.location.hash = '';
 }
 
@@ -1247,6 +1275,11 @@ function showRegionView(regionKey) {
       <div class="district-code">${district.code}</div>
     </div>
   `).join('');
+
+  // Zoom map to districts
+  if (mapLevel !== regionKey) {
+    showDistrictsOnMap(regionKey);
+  }
 
   // Update URL
   window.location.hash = `region=${regionKey}`;
@@ -1278,16 +1311,33 @@ function showDistrictView(regionKey, districtCode) {
 function renderDistrictContent(regionKey, districtCode) {
   const contentDiv = document.getElementById('districtContent');
 
-  if (regionKey === 'toshkent_shahar' && districtCode === 'mirobod') {
-    renderMirobodContent(contentDiv);
-  } else {
-    renderGenericDistrictContent(contentDiv, regionKey, districtCode);
-  }
+  // Show loading
+  contentDiv.innerHTML = `
+    <div style="text-align:center; padding:2rem;">
+      <div class="loading-spinner" style="margin:0 auto 1rem;"></div>
+      <div style="color:var(--muted);">Ma'lumotlar yuklanmoqda...</div>
+    </div>
+  `;
+
+  // Try to load from JSON file: data/districts/{regionKey}/{districtCode}.json
+  const jsonUrl = `data/districts/${regionKey}/${districtCode}.json`;
+
+  fetch(jsonUrl)
+    .then(response => {
+      if (!response.ok) throw new Error('not found');
+      return response.json();
+    })
+    .then(data => {
+      renderDynamicDistrictContent(contentDiv, data);
+    })
+    .catch(() => {
+      // No JSON file — show generic content
+      renderGenericDistrictContent(contentDiv, regionKey, districtCode);
+    });
 }
 
-function renderMirobodContent(container) {
-  const data = MIROBOD_DATA;
-
+// ─── UNIVERSAL DYNAMIC RENDERER (JSON dan) ───
+function renderDynamicDistrictContent(container, data) {
   container.innerHTML = `
     <div class="alert alert-orange">
       <span class="alert-icon">⏰</span>
@@ -1298,14 +1348,14 @@ function renderMirobodContent(container) {
       <div class="section-icon si-green">🏨</div>
       <div>
         <h2>1-QADAM: Dispanserlar</h2>
-        <p>Quyidagi 4 ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+        <p>Quyidagi ${data.dispensaries.length} ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
       </div>
     </div>
 
     ${data.dispensaries.map((disp, index) => `
       <div class="disp-card">
         <div class="disp-card-top">
-          <div class="disp-num n${index + 1}">${disp.id}</div>
+          <div class="disp-num n${(index % 4) + 1}">${disp.id}</div>
           <div>
             <div class="disp-title">${disp.title}</div>
             <div class="disp-subtitle">${disp.subtitle}</div>
@@ -1322,7 +1372,7 @@ function renderMirobodContent(container) {
             <span class="label">Qabul</span>
             <span class="value"><span class="time-badge">${disp.hours}</span></span>
           </div>
-          ${disp.phones ? `
+          ${disp.phones && disp.phones.length ? `
             <div class="info-item">
               <span class="emoji">📞</span>
               <span class="label">Telefon</span>
@@ -1332,20 +1382,20 @@ function renderMirobodContent(container) {
         </div>
         ${disp.coords ? `
           <div class="map-block">
-            <div class="map-addr">📍 ${disp.address}${disp.addressNote ? ` ${disp.addressNote}` : ''}</div>
+            <div class="map-addr">📍 ${disp.address}${disp.addressNote ? ' ' + disp.addressNote : ''}</div>
             <div class="map-btns">
               <a href="https://maps.google.com/?q=${disp.coords[0]},${disp.coords[1]}" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
-              <a href="https://2gis.uz/tashkent?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+              <a href="https://2gis.uz/?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
               <a href="geo:${disp.coords[0]},${disp.coords[1]}?q=${disp.coords[0]},${disp.coords[1]}" class="map-btn map-btn-n">🧭 Navigatsiya</a>
             </div>
           </div>
         ` : ''}
         <div class="disp-actions">
-          ${disp.phones ? disp.phones.map(phone => `
+          ${disp.phones && disp.phones.length ? disp.phones.map(phone => `
             <a href="tel:+998${phone.replace(/-/g, '')}" class="btn btn-call">📞 ${phone}</a>
           `).join('') : ''}
           ${disp.coords ? `
-            <a href="https://2gis.uz/tashkent?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
+            <a href="https://2gis.uz/?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
           ` : ''}
         </div>
       </div>
@@ -1393,21 +1443,23 @@ function renderMirobodContent(container) {
       </div>
     </div>
 
-    <div class="section-header">
-      <div class="section-icon si-blue">❓</div>
-      <div>
-        <h2>Ko'p So'raladigan Savollar</h2>
-      </div>
-    </div>
-
-    <div class="tip-card">
-      ${data.faq.map(item => `
-        <div class="tip-item" onclick="this.classList.toggle('open')">
-          <div class="tip-q"><span>${item.question}</span><span class="tip-toggle">+</span></div>
-          <div class="tip-a">${item.answer}</div>
+    ${data.faq && data.faq.length ? `
+      <div class="section-header">
+        <div class="section-icon si-blue">❓</div>
+        <div>
+          <h2>Ko'p So'raladigan Savollar</h2>
         </div>
-      `).join('')}
-    </div>
+      </div>
+
+      <div class="tip-card">
+        ${data.faq.map(item => `
+          <div class="tip-item" onclick="this.classList.toggle('open')">
+            <div class="tip-q"><span>${item.question}</span><span class="tip-toggle">+</span></div>
+            <div class="tip-a">${item.answer}</div>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
 
     <div class="section-header">
       <div class="section-icon si-blue">📞</div>
@@ -1422,10 +1474,16 @@ function renderMirobodContent(container) {
       <h3>${data.contact.name}</h3>
       <p>${data.contact.description}</p>
       <div class="contact-btns">
-        <a href="https://t.me/${data.contact.telegram}" target="_blank" class="cbtn cbtn-tg">✈️ @${data.contact.telegram}</a>
+        ${data.contact.phone ? `<a href="tel:${data.contact.phone}" class="cbtn cbtn-tel">📞 ${data.contact.phone}</a>` : ''}
+        ${data.contact.telegram ? `<a href="https://t.me/${data.contact.telegram}" target="_blank" class="cbtn cbtn-tg">✈️ @${data.contact.telegram}</a>` : ''}
       </div>
     </div>
   `;
+}
+
+function renderMirobodContent(container) {
+  // Redirect to dynamic loader
+  renderDistrictContent('toshkent_shahar', 'mirobod');
 }
 
 function renderGenericDistrictContent(container, regionKey, districtCode) {
