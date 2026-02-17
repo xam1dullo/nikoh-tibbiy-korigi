@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikoh tibbiy ko'rigi — Mirobod tumani</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a202c; }
+
+  header {
+    background: linear-gradient(135deg, #1a56db, #0e9f6e);
+    color: #fff; text-align: center; padding: 2rem 1rem 2.5rem;
+  }
+  header h1 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  header p { font-size: 0.9rem; opacity: 0.88; }
+
+  .badge {
+    display: inline-block; margin-top: 0.75rem;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 99px; padding: 0.3rem 1rem; font-size: 0.75rem;
+  }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 1rem; }
+
+  .section-title {
+    font-size: 1.1rem; font-weight: 700; color: #1a56db;
+    margin: 1.5rem 0 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 4px solid #0e9f6e;
+  }
+
+  .card {
+    background: #fff; border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 1rem; overflow: hidden;
+  }
+
+  .card-header {
+    background: #ebf5ff; padding: 0.75rem 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .card-header .icon { font-size: 1.4rem; }
+  .card-header .spec { font-weight: 700; font-size: 0.95rem; color: #1a56db; }
+  .card-header .name { font-size: 0.78rem; color: #4a5568; margin-top: 0.1rem; }
+
+  .card-body { padding: 0.85rem 1rem; }
+  .info-row { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .info-row .lbl { color: #718096; min-width: 70px; font-size: 0.78rem; padding-top: 1px; }
+  .info-row .val { color: #2d3748; line-height: 1.4; }
+
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.5rem 1rem; border-radius: 8px;
+    font-size: 0.8rem; font-weight: 600; text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-tel  { background: #e8f5e9; color: #1b5e20; }
+  .btn-map  { background: #fff3e0; color: #e65100; }
+
+  /* Polyclinic steps */
+  .step-list { list-style: none; padding: 0.5rem 0; }
+  .step-list li {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    padding: 0.6rem 1rem; border-bottom: 1px solid #f0f4f8;
+    font-size: 0.87rem;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-num {
+    min-width: 26px; height: 26px; border-radius: 50%;
+    background: #1a56db; color: #fff;
+    font-size: 0.75rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-text .room { font-size: 0.75rem; color: #718096; margin-top: 0.15rem; }
+
+  /* Note box */
+  .note {
+    background: #fffbeb; border: 1px solid #f6c90e;
+    border-radius: 10px; padding: 0.85rem 1rem;
+    font-size: 0.83rem; color: #92400e; margin-bottom: 1rem;
+    display: flex; gap: 0.5rem; align-items: flex-start;
+  }
+
+  /* Contact box */
+  .contact-box {
+    background: linear-gradient(135deg, #1a56db, #0e9f6e);
+    border-radius: 14px; color: #fff;
+    padding: 1.25rem; margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .contact-box h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+  .contact-box p { font-size: 0.82rem; opacity: 0.88; margin-bottom: 1rem; }
+  .contact-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .cbtn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1.25rem; border-radius: 99px;
+    font-size: 0.85rem; font-weight: 700; text-decoration: none;
+    transition: transform 0.15s;
+  }
+  .cbtn:hover { transform: scale(1.04); }
+  .cbtn-tel { background: #fff; color: #1a56db; }
+  .cbtn-tg  { background: #0088cc; color: #fff; }
+
+  footer {
+    text-align: center; font-size: 0.75rem; color: #718096;
+    padding: 1.5rem 1rem 2rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="font-size:2rem; margin-bottom:0.5rem">🏥</div>
+  <h1>Nikoh tibbiy ko'rigi</h1>
+  <p>Mirobod tumani — Nikohlanuvchi shaxslar uchun eslatma</p>
+  <span class="badge">📋 Barcha manzillar va raqamlar</span>
+</header>
+
+<div class="container">
+
+  <!-- ── DISPANSERLAR ── -->
+  <div class="section-title">🏨 Dispanserlar (tashqi)</div>
+
+  <!-- 1. Dermatovenerolog -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">🔬</span>
+      <div>
+        <div class="spec">Dermatovenerolog</div>
+        <div class="name">8-sonli Tumanlararo Teri-tanosil kasalliklar dispanseri</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="info-row">
+        <span class="lbl">📍 Manzil:</span>
+        <span class="val">Yashnobod tumani, Zoxidova ko'chasi, 8-uy (Jarqo'rg'on), Davr bekati</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">🕐 Vaqt:</span>
+        <span class="val">08:00 – 12:00</span>
+      </div>
+      <div class="btn-row">
+        <a href="tel:+997712914780" class="btn btn-tel">📞 71-291-47-80</a>
+        <a href="tel:+997712913371" class="btn btn-tel">📞 71-291-33-71</a>
+        <a href="https://maps.google.com/?q=Yashnobod+tumani+Zoxidova+8+Toshkent" target="_blank" class="btn btn-map">🗺 Xaritada ko'r</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Ftiziator -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">🫁</span>
+      <div>
+        <div class="spec">Ftiziator</div>
+        <div class="name">5-son Tumanlararo Ftiziateriya dispanseri</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="info-row">
+        <span class="lbl">📍 Manzil:</span>
+        <span class="val">Mirobod tumani, 8-Mart ko'chasi, 59-uy</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">🕐 Vaqt:</span>
+        <span class="val">08:00 – 16:00</span>
+      </div>
+      <div class="btn-row">
+        <a href="tel:+997712839881" class="btn btn-tel">📞 71-283-98-81</a>
+        <a href="https://maps.google.com/?q=Mirobod+8+Mart+ko'chasi+59+Toshkent" target="_blank" class="btn btn-map">🗺 Xaritada ko'r</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Psixiatr -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">🧠</span>
+      <div>
+        <div class="spec">Psixiatr</div>
+        <div class="name">2-son Shahar Ruhiy-asab kasalliklari dispanseri</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="info-row">
+        <span class="lbl">📍 Manzil:</span>
+        <span class="val">Yashnobod tumani, Qorasuv ko'chasi, 25-uy (Lisunova, Dvorets Aviastroiteley)</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">🕐 Vaqt:</span>
+        <span class="val">08:00 – 16:00</span>
+      </div>
+      <div class="btn-row">
+        <a href="tel:+997712947465" class="btn btn-tel">📞 71-294-74-65</a>
+        <a href="https://maps.google.com/?q=Yashnobod+Qorasuv+25+Toshkent" target="_blank" class="btn btn-map">🗺 Xaritada ko'r</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Narkolog -->
+  <div class="card">
+    <div class="card-header">
+      <span class="icon">💊</span>
+      <div>
+        <div class="spec">Narkolog</div>
+        <div class="name">Narkologiya dispanseri RIRSITMNB — Toshkent shahar filiali</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="info-row">
+        <span class="lbl">📍 Manzil:</span>
+        <span class="val">Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy (Nuroniylar sanatoriyasi)</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl">🕐 Vaqt:</span>
+        <span class="val">08:00 – 15:00</span>
+      </div>
+      <div class="btn-row">
+        <a href="https://maps.google.com/?q=Yunusobod+Bobodehqon+19+mavze+51+Toshkent" target="_blank" class="btn btn-map">🗺 Xaritada ko'r</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTE after dispensaries -->
+  <div class="note">
+    ℹ️ <span><strong>Eslatma:</strong> Barcha tekshiruvlardan o'tgach, yakuniy tibbiy xulosa uchun — <strong>Mirobod TTB MKP, 3-qavat, 49-xona</strong>ga murojaat qiling.</span>
+  </div>
+
+  <!-- ── POLIKLINIKA ── -->
+  <div class="section-title">🏥 Poliklinika bo'yicha (ichki)</div>
+
+  <div class="card">
+    <ul class="step-list">
+      <li>
+        <span class="step-num">1</span>
+        <div class="step-text">
+          <strong>OIV tekshiruvi</strong> (117-kod)
+          <div class="room">1-qavat, 14a-xona — Dushanba, Chorshanba, Juma: 08:00–09:00. Pasport + propiska nusxasi kerak.</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <div class="step-text">
+          <strong>Umumiy qon va qondagi qand</strong>
+          <div class="room">2-qavat, 35-xona</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <div class="step-text">
+          <strong>EKG</strong>
+          <div class="room">2-qavat, 32-xona</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <div class="step-text">
+          <strong>UTT tekshiruvi</strong>
+          <div class="room">1-qavat, 14-xona</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">5</span>
+        <div class="step-text">
+          <strong>Ginekolog</strong>
+          <div class="room">2-qavat, 17-xona</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">6</span>
+        <div class="step-text">
+          <strong>Urolog</strong>
+          <div class="room">2-qavat, 30-xona</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">7</span>
+        <div class="step-text">
+          <strong>Endokrinolog</strong>
+          <div class="room">2-qavat, 24-xona</div>
+        </div>
+      </li>
+      <li>
+        <span class="step-num">8</span>
+        <div class="step-text">
+          <strong>Revmatolog</strong>
+          <div class="room">2-qavat, 29-xona</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="note">
+    ℹ️ <span><strong>Eslatma:</strong> Barcha poliklinika tekshiruvlaridan so'ng xulosa uchun — <strong>3-qavat, 49-xona</strong>.</span>
+  </div>
+
+  <!-- ── CONTACT ── -->
+  <div class="contact-box">
+    <h3>📞 Masul shaxs bilan bog'laning</h3>
+    <p>Savollaringiz bo'lsa, quyidagi raqam yoki Telegram orqali murojaat qiling</p>
+    <div class="contact-btns">
+      <!-- 🔴 REPLACE +998901234567 with real phone number -->
+      <a href="tel:+998901234567" class="cbtn cbtn-tel">📞 +998 90 123-45-67</a>
+      <!-- 🔴 REPLACE username with real Telegram username -->
+      <a href="https://t.me/USERNAME" target="_blank" class="cbtn cbtn-tg">✈️ Telegram</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Mirobod tumani Tibbiyot birlashmasi · Nikoh tibbiy ko'rigi xizmati
+</footer>
+
+</body>
+</html>
