@@ -16,6 +16,39 @@
 
   gtag('config', 'G-04CQS4RK2T');
 </script>
+<script>
+// Google Analytics event tracking for key actions
+function trackGAEvent(category, action, label) {
+  if (typeof gtag === 'function') {
+    gtag('event', action, {
+      'event_category': category,
+      'event_label': label
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Map buttons (Google, Yandex, 2GIS, Navigatsiya)
+  document.body.addEventListener('click', function(e) {
+    const mapBtn = e.target.closest('.map-btn');
+    if (mapBtn) {
+      trackGAEvent('Map', 'map_button_click', mapBtn.textContent.trim());
+    }
+    const callBtn = e.target.closest('.btn-call');
+    if (callBtn) {
+      trackGAEvent('Contact', 'call_button_click', callBtn.textContent.trim());
+    }
+    const map2gisBtn = e.target.closest('.btn-map');
+    if (map2gisBtn) {
+      trackGAEvent('Map', '2gis_button_click', map2gisBtn.textContent.trim());
+    }
+    const tgBtn = e.target.closest('.cbtn-tg');
+    if (tgBtn) {
+      trackGAEvent('Contact', 'telegram_button_click', tgBtn.textContent.trim());
+    }
+  });
+});
+</script>
 <style>
   :root {
     --primary: #1a73e8;
