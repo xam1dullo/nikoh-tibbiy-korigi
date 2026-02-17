@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nikoh Tibbiy Ko'rigi — Mirobod Tumani</title>
+<title>Nikoh Tibbiy Ko'rigi — O'zbekiston</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
   :root {
     --primary: #1a73e8;
@@ -89,38 +91,6 @@
   .how-banner p { font-size: 0.85rem; color: #5f4200; }
   .how-banner strong { color: #e65100; }
 
-  /* ─── PROGRESS STEPS ─── */
-  .progress-bar {
-    background: #fff;
-    padding: 1.25rem 1.25rem 0.75rem;
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 50;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .progress-bar h2 {
-    font-size: 0.75rem; font-weight: 700; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 0.75rem;
-  }
-  .steps-row {
-    display: flex; gap: 0.25rem; align-items: center;
-    overflow-x: auto; padding-bottom: 0.25rem;
-    scrollbar-width: none;
-  }
-  .steps-row::-webkit-scrollbar { display: none; }
-  .step-chip {
-    display: flex; align-items: center; gap: 0.35rem;
-    background: var(--blue-light);
-    border-radius: 99px; padding: 0.35rem 0.75rem;
-    font-size: 0.72rem; font-weight: 700; color: var(--primary);
-    white-space: nowrap; text-decoration: none;
-    transition: all 0.2s; flex-shrink: 0;
-  }
-  .step-chip:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
-  .step-chip.external { background: var(--orange-light); color: #b45309; }
-  .step-chip.external:hover { background: var(--orange); color: #fff; }
-  .step-arrow { color: var(--border); font-size: 0.75rem; flex-shrink: 0; }
-
   /* ─── CONTAINER ─── */
   .container { max-width: 700px; margin: 0 auto; padding: 1.25rem; }
 
@@ -142,7 +112,96 @@
   }
   .section-header p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
 
-  /* ─── INFO ALERT ─── */
+  /* ─── MAP STYLES ─── */
+  #map {
+    height: 400px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .loading {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 400px; color: var(--muted);
+  }
+  .loading-spinner {
+    width: 40px; height: 40px; border: 4px solid var(--border);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* ─── SEARCH BAR ─── */
+  .search-bar {
+    position: relative; margin-bottom: 1.5rem;
+  }
+  .search-input {
+    width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 2px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 1rem; font-family: 'Rubik', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus {
+    outline: none; border-color: var(--primary);
+  }
+  .search-icon {
+    position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+    font-size: 1.2rem; color: var(--muted);
+  }
+
+  /* ─── REGION CARDS ─── */
+  .regions-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .region-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 1.2rem; border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .region-card:hover {
+    box-shadow: var(--shadow-hover); transform: translateY(-2px);
+  }
+  .region-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .region-districts { font-size: 0.85rem; color: var(--muted); }
+
+  /* ─── DISTRICT CARDS ─── */
+  .districts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .district-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 1rem; border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .district-card:hover {
+    box-shadow: var(--shadow-hover); transform: translateY(-2px);
+  }
+  .district-name { font-weight: 600; font-size: 1rem; }
+  .district-code { font-size: 0.8rem; color: var(--muted); }
+
+  /* ─── BREADCRUMBS ─── */
+  .breadcrumbs {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 1.5rem; font-size: 0.9rem;
+  }
+  .breadcrumb-link {
+    color: var(--primary); text-decoration: none; cursor: pointer;
+  }
+  .breadcrumb-link:hover { text-decoration: underline; }
+  .breadcrumb-separator { color: var(--muted); }
+
+  /* ─── VIEW STATES ─── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ─── ALERT BOXES ─── */
   .alert {
     display: flex; gap: 0.75rem; align-items: flex-start;
     border-radius: var(--radius-sm);
@@ -155,7 +214,7 @@
   .alert-orange { background: var(--orange-light); color: #7c3d00; border-left: 4px solid var(--orange); }
   .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
 
-  /* ─── DISPANSER CARD ─── */
+  /* ─── DISPANSER/FACILITY CARDS ─── */
   .disp-card {
     background: var(--card);
     border-radius: var(--radius);
@@ -249,9 +308,6 @@
   .map-btn-2:hover { background: #0f9d58; color: #fff; }
   .map-btn-n { background: #fff; border: 1.5px solid #f29900; color: #92400e; }
   .map-btn-n:hover { background: #f29900; color: #fff; }
-  @media (max-width: 480px) {
-    .map-btn { flex: 1 1 auto; justify-content: center; }
-  }
 
   /* ─── POLYCLINIC STEPS ─── */
   .poly-card {
@@ -294,6 +350,30 @@
   }
   .step-tag.special { background: var(--orange-light); color: #92400e; }
 
+  /* ─── FAQ / TIPS ─── */
+  .tip-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .tip-item {
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .tip-item:last-child { border-bottom: none; }
+  .tip-q {
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 700; font-size: 0.9rem; gap: 0.75rem;
+  }
+  .tip-q span { flex: 1; }
+  .tip-toggle { color: var(--primary); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.25s; }
+  .tip-a { display: none; font-size: 0.83rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.6; }
+  .tip-item.open .tip-a { display: block; }
+  .tip-item.open .tip-toggle { transform: rotate(45deg); }
+
   /* ─── CONTACT CARD ─── */
   .contact-card {
     background: linear-gradient(145deg, #1a73e8, #0f9d58);
@@ -323,78 +403,20 @@
   .cbtn-tg  { background: #0088cc; color: #fff; }
   .cbtn-tg:hover  { background: #0077b5; }
 
-  /* ─── FAQ / TIPS ─── */
-  .tip-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-  .tip-item {
-    padding: 1rem 1.1rem;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-  }
-  .tip-item:last-child { border-bottom: none; }
-  .tip-q {
-    display: flex; align-items: center; justify-content: space-between;
-    font-weight: 700; font-size: 0.9rem; gap: 0.75rem;
-  }
-  .tip-q span { flex: 1; }
-  .tip-toggle { color: var(--primary); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.25s; }
-  .tip-a { display: none; font-size: 0.83rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.6; }
-  .tip-item.open .tip-a { display: block; }
-  .tip-item.open .tip-toggle { transform: rotate(45deg); }
-
-  /* ─── DEVELOPER FOOTER ─── */
-  footer {
-    background: #111827;
-    color: #9ca3af;
-    padding: 2rem 1.25rem;
-    text-align: center;
-    margin-top: 2rem;
-  }
-  .footer-top {
-    background: #1f2937;
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
-    max-width: 400px;
-    margin-left: auto; margin-right: auto;
-  }
-  .footer-top .dev-label {
-    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
-    color: #6b7280; margin-bottom: 0.5rem;
-  }
-  .dev-name {
-    font-family: 'Nunito', sans-serif; font-weight: 800;
-    font-size: 1.05rem; color: #f9fafb; margin-bottom: 0.75rem;
-  }
-  .dev-tg {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: #0088cc; color: #fff;
-    border-radius: 99px; padding: 0.5rem 1.1rem;
-    font-size: 0.82rem; font-weight: 700;
-    text-decoration: none; transition: background 0.2s;
-  }
-  .dev-tg:hover { background: #0077b5; }
-  footer p { font-size: 0.75rem; color: #4b5563; margin-top: 0.75rem; }
-  .footer-divider { height: 1px; background: #374151; margin: 1.25rem 0; }
-
   /* ─── MOBILE TWEAKS ─── */
   @media (max-width: 480px) {
     .hero { padding: 2rem 1rem 3rem; }
     .hero h1 { font-size: 1.5rem; }
+    .regions-grid { grid-template-columns: 1fr; }
+    .districts-grid { grid-template-columns: 1fr; }
     .disp-actions { flex-direction: column; }
     .btn { width: 100%; justify-content: center; }
     .contact-btns { flex-direction: column; align-items: center; }
     .cbtn { width: 100%; max-width: 260px; justify-content: center; }
-    .steps-row { padding-bottom: 0.5rem; }
-    .map-embed { height: 160px; }
+    .map-btn { flex: 1 1 auto; justify-content: center; }
   }
 
-  /* ─── SCROLL ANIMATIONS ─── */
+  /* ─── ANIMATIONS ─── */
   .fade-in {
     opacity: 0; transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
@@ -425,374 +447,1235 @@
 <header class="hero" id="top">
   <span class="hero-icon">🏥</span>
   <h1>Nikoh Tibbiy Ko'rigi</h1>
-  <p>Mirobod tumani — nikohlanuvchi shaxslar uchun to'liq qo'llanma</p>
+  <p>O'zbekiston — nikohlanuvchi shaxslar uchun to'liq qo'llanma</p>
   <div class="hero-steps">
-    <span class="hero-step">📋 4 ta Dispanser</span>
-    <span class="hero-step">🔬 8 ta Tekshiruv</span>
-    <span class="hero-step">🗺 Xaritalar bor</span>
-    <span class="hero-step">📞 Aloqa raqami</span>
+    <span class="hero-step">🗺 14 ta Viloyat</span>
+    <span class="hero-step">📍 200+ Tuman</span>
+    <span class="hero-step">🔍 Qidiruv</span>
+    <span class="hero-step">📱 Mobil</span>
   </div>
 </header>
 
 <!-- ─── HOW TO USE ─── -->
 <div class="how-banner">
-  <p>📌 <strong>Qanday foydalanish:</strong> Avval <strong>4 ta dispanserga</strong> boring, so'ng <strong>poliklinikada</strong> tekshiruvlardan o'ting, va <strong>3-qavat 49-xona</strong>dan xulosa oling.</p>
+  <p>📌 <strong>Qanday foydalanish:</strong> <strong>Viloyatni</strong> tanlang, so'ng <strong>tumaningizni</strong> bosing. Har bir tuman uchun to'liq ma'lumot berilgan.</p>
 </div>
 
-<!-- ─── STICKY NAVIGATION ─── -->
-<nav class="progress-bar">
-  <h2>📍 Tez navigatsiya</h2>
-  <div class="steps-row">
-    <a href="#dispanserlar" class="step-chip external">🏨 Dispanserlar</a>
-    <span class="step-arrow">›</span>
-    <a href="#polyclinic" class="step-chip">🏥 Poliklinika</a>
-    <span class="step-arrow">›</span>
-    <a href="#xulosa" class="step-chip">📄 Xulosa olish</a>
-    <span class="step-arrow">›</span>
-    <a href="#contact" class="step-chip">📞 Bog'lanish</a>
+<!-- ─── SEARCH BAR ─── -->
+<div class="container">
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" class="search-input" placeholder="Viloyat yoki tuman nomini kiriting...">
   </div>
-</nav>
+</div>
 
 <div class="container">
 
-  <!-- ─── DISPANSERLAR SECTION ─── -->
-  <div class="section-header fade-in" id="dispanserlar">
-    <div class="section-icon si-green">🏨</div>
-    <div>
-      <h2>1-QADAM: Dispanserlar</h2>
-      <p>Quyidagi 4 ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+  <!-- ─── MAIN VIEW ─── -->
+  <div id="mainView" class="view active">
+    <div id="mapContainer">
+      <div id="map"></div>
     </div>
+
+    <div class="regions-grid" id="regionsGrid"></div>
   </div>
 
-  <div class="alert alert-orange fade-in">
-    <span class="alert-icon">⏰</span>
-    <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
-  </div>
+  <!-- ─── REGION VIEW ─── -->
+  <div id="regionView" class="view">
+    <div class="breadcrumbs">
+      <span class="breadcrumb-link" onclick="showMainView()">🏠 Bosh sahifa</span>
+      <span class="breadcrumb-separator">›</span>
+      <span id="regionBreadcrumb"></span>
+    </div>
 
-  <!-- CARD 1: DERMATOVENEROLOG -->
-  <div class="disp-card fade-in">
-    <div class="disp-card-top">
-      <div class="disp-num n1">1</div>
+    <div class="section-header">
+      <div class="section-icon si-blue">📍</div>
       <div>
-        <div class="disp-title">🔬 Dermatovenerolog</div>
-        <div class="disp-subtitle">8-sonli Tumanlararo Teri-tanosil kasalliklar dispanseri</div>
+        <h2 id="regionTitle"></h2>
+        <p id="regionSubtitle">Quyidagi tumanlardan birini tanlang</p>
       </div>
     </div>
-    <div class="disp-body">
-      <div class="info-item">
-        <span class="emoji">📍</span>
-        <span class="label">Manzil</span>
-        <span class="value">Yashnobod tumani, Zoxidov ko'chasi, 8-uy <br><em style="color:var(--muted);font-size:0.78rem;">(Jarqo'rg'on, Davr bekati)</em></span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">🕐</span>
-        <span class="label">Qabul</span>
-        <span class="value"><span class="time-badge">08:00 – 12:00</span></span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">📞</span>
-        <span class="label">Telefon</span>
-        <span class="value">71-291-47-80 &nbsp;|&nbsp; 71-291-33-71</span>
-      </div>
-    </div>
-    <div class="map-block">
-      <div class="map-addr">📍 Yashnobod tumani, Zoxidov ko'chasi, 8-uy (Jarqo'rg'on, Davr bekati)</div>
-      <div class="map-btns">
-        <a href="https://maps.google.com/?q=41.3672,69.3116" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
-        <a href="https://2gis.uz/tashkent?m=69.3116,41.3672/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
-        <a href="geo:41.3672,69.3116?q=41.3672,69.3116" class="map-btn map-btn-n">🧭 Navigatsiya</a>
-      </div>
-    </div>
-    <div class="disp-actions">
-      <a href="tel:+998712914780" class="btn btn-call">📞 71-291-47-80</a>
-      <a href="tel:+998712913371" class="btn btn-call">📞 71-291-33-71</a>
-      <a href="https://2gis.uz/tashkent?m=69.3116,41.3672/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
-    </div>
+
+    <div class="districts-grid" id="districtsGrid"></div>
   </div>
 
-  <!-- CARD 2: FTIZIATOR -->
-  <div class="disp-card fade-in">
-    <div class="disp-card-top">
-      <div class="disp-num n2">2</div>
+  <!-- ─── DISTRICT VIEW ─── -->
+  <div id="districtView" class="view">
+    <div class="breadcrumbs">
+      <span class="breadcrumb-link" onclick="showMainView()">🏠 Bosh sahifa</span>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-link" id="districtRegionBreadcrumb"></span>
+      <span class="breadcrumb-separator">›</span>
+      <span id="districtBreadcrumb"></span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">🏥</div>
       <div>
-        <div class="disp-title">🫁 Ftiziator</div>
-        <div class="disp-subtitle">5-son Tumanlararo Ftiziateriya dispanseri</div>
+        <h2 id="districtTitle"></h2>
+        <p>Nikoh tibbiy ko'rigi uchun to'liq ma'lumot</p>
       </div>
     </div>
-    <div class="disp-body">
-      <div class="info-item">
-        <span class="emoji">📍</span>
-        <span class="label">Manzil</span>
-        <span class="value">Mirobod tumani, 8-Mart ko'chasi, 59-uy</span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">🕐</span>
-        <span class="label">Qabul</span>
-        <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">📞</span>
-        <span class="label">Telefon</span>
-        <span class="value">71-283-98-81</span>
-      </div>
-    </div>
-    <div class="map-block">
-      <div class="map-addr">📍 Mirobod tumani, 8-Mart ko'chasi, 59-uy</div>
-      <div class="map-btns">
-        <a href="https://maps.google.com/?q=41.2809,69.2954" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
-        <a href="https://2gis.uz/tashkent?m=69.2954,41.2809/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
-        <a href="geo:41.2809,69.2954?q=41.2809,69.2954" class="map-btn map-btn-n">🧭 Navigatsiya</a>
-      </div>
-    </div>
-    <div class="disp-actions">
-      <a href="tel:+998712839881" class="btn btn-call">📞 71-283-98-81</a>
-      <a href="https://2gis.uz/tashkent?m=69.2954,41.2809/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
-    </div>
+
+    <div id="districtContent"></div>
   </div>
 
-  <!-- CARD 3: PSIXIATR -->
-  <div class="disp-card fade-in">
-    <div class="disp-card-top">
-      <div class="disp-num n3">3</div>
-      <div>
-        <div class="disp-title">🧠 Psixiatr</div>
-        <div class="disp-subtitle">2-son Shahar Ruhiy-asab kasalliklari dispanseri</div>
-      </div>
-    </div>
-    <div class="disp-body">
-      <div class="info-item">
-        <span class="emoji">📍</span>
-        <span class="label">Manzil</span>
-        <span class="value">Yashnobod tumani, Qorasuv ko'chasi, 25-uy <br><em style="color:var(--muted);font-size:0.78rem;">(Lisunova, Dvorets Aviastroiteley)</em></span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">🕐</span>
-        <span class="label">Qabul</span>
-        <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">📞</span>
-        <span class="label">Telefon</span>
-        <span class="value">71-294-74-65</span>
-      </div>
-    </div>
-    <div class="map-block">
-      <div class="map-addr">📍 Yashnobod tumani, Qorasuv ko'chasi, 25-uy (Lisunova)</div>
-      <div class="map-btns">
-        <a href="https://maps.google.com/?q=41.2939,69.3400" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
-        <a href="https://2gis.uz/tashkent?m=69.3400,41.2939/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
-        <a href="geo:41.2939,69.3400?q=41.2939,69.3400" class="map-btn map-btn-n">🧭 Navigatsiya</a>
-      </div>
-    </div>
-    <div class="disp-actions">
-      <a href="tel:+998712947465" class="btn btn-call">📞 71-294-74-65</a>
-      <a href="https://2gis.uz/tashkent?m=69.3400,41.2939/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
-    </div>
-  </div>
+</div>
 
-  <!-- CARD 4: NARKOLOG -->
-  <div class="disp-card fade-in">
-    <div class="disp-card-top">
-      <div class="disp-num n4">4</div>
-      <div>
-        <div class="disp-title">💊 Narkolog</div>
-        <div class="disp-subtitle">Narkologiya dispanseri — Toshkent shahar filiali (RIRSITMNB)</div>
-      </div>
-    </div>
-    <div class="disp-body">
-      <div class="info-item">
-        <span class="emoji">📍</span>
-        <span class="label">Manzil</span>
-        <span class="value">Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy <br><em style="color:var(--muted);font-size:0.78rem;">(Nuroniylar sanatoriyasi yaqinida)</em></span>
-      </div>
-      <div class="info-item">
-        <span class="emoji">🕐</span>
-        <span class="label">Qabul</span>
-        <span class="value"><span class="time-badge">08:00 – 15:00</span></span>
-      </div>
-    </div>
-    <div class="map-block">
-      <div class="map-addr">📍 Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy (Nuroniylar sanatoriyasi)</div>
-      <div class="map-btns">
-        <a href="https://maps.google.com/?q=41.3804,69.3166" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
-        <a href="https://2gis.uz/tashkent?m=69.3166,41.3804/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
-        <a href="geo:41.3804,69.3166?q=41.3804,69.3166" class="map-btn map-btn-n">🧭 Navigatsiya</a>
-      </div>
-    </div>
-    <div class="disp-actions">
-      <a href="https://2gis.uz/tashkent?m=69.3166,41.3804/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
-    </div>
+<!-- ─── FOOTER ─── -->
+<footer style="background: #111827; color: #9ca3af; padding: 2rem 1.25rem; text-align: center; margin-top: 2rem;">
+  <div style="background: #1f2937; border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+    <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: #6b7280; margin-bottom: 0.5rem;">🛠️ Sayt ishlab chiquvchisi</div>
+    <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: #f9fafb; margin-bottom: 0.75rem;">Xamidullo Xudoyberdiyev</div>
+    <a href="https://t.me/xamidullo_xudoyberdiyev" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #0088cc; color: #fff; border-radius: 99px; padding: 0.5rem 1.1rem; font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: background 0.2s;">
+      ✈️ @xamidullo_xudoyberdiyev
+    </a>
   </div>
-
-  <!-- ─── POLIKLINIKA SECTION ─── -->
-  <div class="section-header fade-in" id="polyclinic">
-    <div class="section-icon si-blue">🏥</div>
-    <div>
-      <h2>2-QADAM: Poliklinika Tekshiruvlari</h2>
-      <p>Dispanserlardan keyin, o'z poliklinikangizda quyidagi tahlillardan o'ting</p>
-    </div>
-  </div>
-
-  <div class="alert alert-blue fade-in">
-    <span class="alert-icon">ℹ️</span>
-    <span><strong>Pasport + propiska nusxasini</strong> olib keling. OIV tekshiruvi uchun faqat <strong>Dushanba, Chorshanba, Juma</strong> kunlari, <strong>08:00–09:00</strong> orasida boring.</span>
-  </div>
-
-  <div class="poly-card fade-in">
-    <div class="poly-step">
-      <div class="step-circle">1</div>
-      <div class="step-info">
-        <div class="step-name">OIV tekshiruvi (117-kod)</div>
-        <div class="step-loc">🚪 1-qavat, 14a-xona</div>
-      </div>
-      <div class="step-tag special">Du/Chor/Ju 08–09</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">2</div>
-      <div class="step-info">
-        <div class="step-name">Umumiy qon va qondagi qand</div>
-        <div class="step-loc">🚪 2-qavat, 35-xona</div>
-      </div>
-      <div class="step-tag">Laboratoriya</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">3</div>
-      <div class="step-info">
-        <div class="step-name">EKG (elektrokardiogramma)</div>
-        <div class="step-loc">🚪 2-qavat, 32-xona</div>
-      </div>
-      <div class="step-tag">Yurak</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">4</div>
-      <div class="step-info">
-        <div class="step-name">UTT tekshiruvi (ultratovush)</div>
-        <div class="step-loc">🚪 1-qavat, 14-xona</div>
-      </div>
-      <div class="step-tag">Ultratovush</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">5</div>
-      <div class="step-info">
-        <div class="step-name">Ginekolog</div>
-        <div class="step-loc">🚪 2-qavat, 17-xona</div>
-      </div>
-      <div class="step-tag">Ayollar</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">6</div>
-      <div class="step-info">
-        <div class="step-name">Urolog</div>
-        <div class="step-loc">🚪 2-qavat, 30-xona</div>
-      </div>
-      <div class="step-tag">Erkaklar</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">7</div>
-      <div class="step-info">
-        <div class="step-name">Endokrinolog</div>
-        <div class="step-loc">🚪 2-qavat, 24-xona</div>
-      </div>
-      <div class="step-tag">Gormon</div>
-    </div>
-    <div class="poly-step">
-      <div class="step-circle">8</div>
-      <div class="step-info">
-        <div class="step-name">Revmatolog</div>
-        <div class="step-loc">🚪 2-qavat, 29-xona</div>
-      </div>
-      <div class="step-tag">Bo'g'im</div>
-    </div>
-  </div>
-
-  <!-- ─── XULOSA SECTION ─── -->
-  <div class="section-header fade-in" id="xulosa">
-    <div class="section-icon si-green">📄</div>
-    <div>
-      <h2>3-QADAM: Xulosa Olish</h2>
-      <p>Barcha tekshiruvlar tugagach shu xonaga boring</p>
-    </div>
-  </div>
-
-  <div class="alert alert-green fade-in">
-    <span class="alert-icon">✅</span>
-    <div>
-      <strong>Mirobod TTB MKP — 3-qavat, 49-xona</strong><br>
-      <span style="font-size:0.82rem;">Barcha dispanser va poliklinika ma'lumotnomalarini olib keling. Shu yerda yakuniy tibbiy xulosa beriladi.</span>
-    </div>
-  </div>
-
-  <!-- ─── FAQ ─── -->
-  <div class="section-header fade-in">
-    <div class="section-icon si-blue">❓</div>
-    <div>
-      <h2>Ko'p So'raladigan Savollar</h2>
-    </div>
-  </div>
-
-  <div class="tip-card fade-in">
-    <div class="tip-item" onclick="this.classList.toggle('open')">
-      <div class="tip-q"><span>📋 Qanday hujjatlar kerak?</span><span class="tip-toggle">+</span></div>
-      <div class="tip-a">Pasport asl nusxasi va fotokopiyasi, propiska (ro'yxatdan o'tish) fotokopiyasi. Ayrim joylar qo'shimcha hujjat so'rashi mumkin.</div>
-    </div>
-    <div class="tip-item" onclick="this.classList.toggle('open')">
-      <div class="tip-q"><span>⏱️ Hammasi qancha vaqt oladi?</span><span class="tip-toggle">+</span></div>
-      <div class="tip-a">Odatda 2–4 kun. Dispanserlarga alohida kunlarda borish qulay. Poliklinika tekshiruvlarini bir kunda o'tish mumkin, lekin OIV uchun faqat Du/Chor/Juma kunlari boring.</div>
-    </div>
-    <div class="tip-item" onclick="this.classList.toggle('open')">
-      <div class="tip-q"><span>💰 Tekshiruvlar pulli yoki beplatmi?</span><span class="tip-toggle">+</span></div>
-      <div class="tip-a">Asosiy tibbiy ko'rik bepul. Lekin ba'zi dispanserlarda hujjat rasmiylashtiruvi uchun to'lov bo'lishi mumkin. Aniq ma'lumot uchun masul shaxs bilan bog'laning.</div>
-    </div>
-    <div class="tip-item" onclick="this.classList.toggle('open')">
-      <div class="tip-q"><span>🕐 Qaysi dispanserlarga avval borish kerak?</span><span class="tip-toggle">+</span></div>
-      <div class="tip-a">Ketma-ketlik muhim emas. Lekin <strong>Dermatovenerolog</strong>ga 08:00–12:00 orasida boring (qabul vaqti qisqa). Narkolog 08:00–15:00 gacha.</div>
-    </div>
-    <div class="tip-item" onclick="this.classList.toggle('open')">
-      <div class="tip-q"><span>📞 Savollarim bo'lsa kimga murojaat qilaman?</span><span class="tip-toggle">+</span></div>
-      <div class="tip-a">Quyidagi "Bog'lanish" bo'limidagi telefon yoki Telegram orqali masul shaxs bilan bog'laning. Javob vaqti — ish kuni soatlari ichida.</div>
-    </div>
-  </div>
-
-  <!-- ─── CONTACT CARD ─── -->
-  <div class="section-header fade-in" id="contact">
-    <div class="section-icon si-blue">📞</div>
-    <div>
-      <h2>Masul Shaxs</h2>
-      <p>Savol yoki muammo bo'lsa, darhol murojaat qiling</p>
-    </div>
-  </div>
-
-  <div class="contact-card fade-in">
-    <div class="cc-icon">👨‍⚕️</div>
-    <h3>Mirobod TTB — Masul Shaxs</h3>
-    <p>Nikoh tibbiy ko'rigi bo'yicha barcha savollaringizga javob beramiz</p>
-    <div class="contact-btns">
-      <a href="tel:+998977528989" class="cbtn cbtn-tel">📞 +998 97 752-89-89</a>
-      <a href="https://t.me/MN_889G" target="_blank" class="cbtn cbtn-tg">✈️ @MN_889G</a>
-    </div>
-  </div>
-
-</div><!-- /container -->
-
-<!-- ─── FOOTER / DEVELOPER ─── -->
-<footer>
-  <div class="container" style="padding:0;">
-    <div class="footer-top">
-      <div class="dev-label">🛠️ Sayt ishlab chiquvchisi</div>
-      <div class="dev-name">Xamidullo Xudoyberdiyev</div>
-      <a href="https://t.me/xamidullo_xudoyberdiyev" target="_blank" class="dev-tg">
-        ✈️ @xamidullo_xudoyberdiyev
-      </a>
-    </div>
-    <div class="footer-divider"></div>
-    <p>© 2025 Mirobod tumani Tibbiyot birlashmasi</p>
-    <p style="margin-top:0.4rem;">Nikoh tibbiy ko'rigi xizmati — Barcha huquqlar himoyalangan</p>
-  </div>
+  <div style="height: 1px; background: #374151; margin: 1.25rem 0;"></div>
+  <p style="font-size: 0.75rem; color: #4b5563;">© 2025 O'zbekiston Nikoh Tibbiy Ko'rigi</p>
+  <p style="font-size: 0.75rem; color: #4b5563; margin-top: 0.4rem;">Nikoh tibbiy ko'rigi xizmati — Barcha huquqlar himoyalangan</p>
 </footer>
 
 <script>
-  // ─── Fade-in on scroll ───
-  const faders = document.querySelectorAll('.fade-in');
+// ─── APP DATA ───
+const REGIONS = {
+  toshkent_shahar: {
+    name: "Toshkent shahri",
+    districts: [
+      {name: "Bektemir", code: "bektemir"},
+      {name: "Chilonzor", code: "chilonzor"},
+      {name: "Mirabad", code: "mirabad"},
+      {name: "Mirobod", code: "mirobod"},
+      {name: "Olmazor", code: "olmazor"},
+      {name: "Sergeli", code: "sergeli"},
+      {name: "Shayhontohur", code: "shayhontohur"},
+      {name: "Uchtepa", code: "uchtepa"},
+      {name: "Yakkasaroy", code: "yakkasaroy"},
+      {name: "Yangihayon", code: "yangihayon"},
+      {name: "Yashnobod", code: "yashnobod"},
+      {name: "Yunusobod", code: "yunusobod"}
+    ]
+  },
+  andijon: {
+    name: "Andijon viloyati",
+    districts: [
+      {name: "Andijon shahar", code: "andijon_shahar"},
+      {name: "Andijon tuman", code: "andijon_tuman"},
+      {name: "Asaka", code: "asaka"},
+      {name: "Baliqchi", code: "baliqchi"},
+      {name: "Bo'ston", code: "boston"},
+      {name: "Buloqboshi", code: "buloqboshi"},
+      {name: "Izboskan", code: "izboskan"},
+      {name: "Jalaquduq", code: "jalaquduq"},
+      {name: "Qo'rg'ontepa", code: "qorgontepa"},
+      {name: "Marhamat", code: "marhamat"},
+      {name: "Oltinko'l", code: "oltinkol"},
+      {name: "Paxtaobod", code: "paxtaobod"},
+      {name: "Shahrixon", code: "shahrixon"},
+      {name: "Ulugnor", code: "ulugnor"},
+      {name: "Xo'jaobod", code: "xojaobod"}
+    ]
+  },
+  buxoro: {
+    name: "Buxoro viloyati",
+    districts: [
+      {name: "Buxoro shahar", code: "buxoro_shahar"},
+      {name: "Buxoro tuman", code: "buxoro_tuman"},
+      {name: "Vobkent", code: "vobkent"},
+      {name: "G'ijduvon", code: "gijduvon"},
+      {name: "Jondor", code: "jondor"},
+      {name: "Kogon shahar", code: "kogon_shahar"},
+      {name: "Kogon tuman", code: "kogon_tuman"},
+      {name: "Qorako'l", code: "qorakol"},
+      {name: "Qorovulbozor", code: "qorovulbozor"},
+      {name: "Romitan", code: "romitan"},
+      {name: "Shofirkon", code: "shofirkon"}
+    ]
+  },
+  fargona: {
+    name: "Farg'ona viloyati",
+    districts: [
+      {name: "Farg'ona shahar", code: "fargona_shahar"},
+      {name: "Marg'ilon", code: "margilon"},
+      {name: "Quvasoy", code: "quvasoy"},
+      {name: "Qo'qon", code: "qoqon"},
+      {name: "Oltiariq", code: "oltiariq"},
+      {name: "Bag'dod", code: "bagdod"},
+      {name: "Beshariq", code: "beshariq"},
+      {name: "Buvayda", code: "buvayda"},
+      {name: "Dang'ara", code: "dangara"},
+      {name: "Farg'ona tuman", code: "fargona_tuman"},
+      {name: "Furqat", code: "furqat"},
+      {name: "Qo'shtepa", code: "qoshtepa"},
+      {name: "Quva", code: "quva"},
+      {name: "Rishton", code: "rishton"},
+      {name: "So'x", code: "sox"},
+      {name: "Toshloq", code: "toshloq"},
+      {name: "Uchko'prik", code: "uchkoprik"},
+      {name: "O'zbekiston", code: "ozbekiston"},
+      {name: "Yozyovon", code: "yozyovon"}
+    ]
+  },
+  jizzax: {
+    name: "Jizzax viloyati",
+    districts: [
+      {name: "Jizzax shahar", code: "jizzax_shahar"},
+      {name: "Arnasoy", code: "arnasoy"},
+      {name: "Baxtiyor", code: "baxtiyor"},
+      {name: "Do'stlik", code: "dostlik"},
+      {name: "Forish", code: "forish"},
+      {name: "G'allaorol", code: "gallaorol"},
+      {name: "Sharof Rashidov", code: "sharof_rashidov"},
+      {name: "Mirzacho'l", code: "mirzachol"},
+      {name: "Paxtakor", code: "paxtakor"},
+      {name: "Yangiobod", code: "yangiobod"},
+      {name: "Zafarobod", code: "zafarobod"},
+      {name: "Zarbdor", code: "zarbdor"}
+    ]
+  },
+  xorazm: {
+    name: "Xorazm viloyati",
+    districts: [
+      {name: "Urganch shahar", code: "urganch_shahar"},
+      {name: "Xiva shahar", code: "xiva_shahar"},
+      {name: "Bog'ot", code: "bogot"},
+      {name: "Gurlan", code: "gurlan"},
+      {name: "Qo'shko'pir", code: "qoshkopir"},
+      {name: "Shovot", code: "shovot"},
+      {name: "Urganch tuman", code: "urganch_tuman"},
+      {name: "Xazorasp", code: "xazorasp"},
+      {name: "Xiva tuman", code: "xiva_tuman"},
+      {name: "Yangiariq", code: "yangiariq"},
+      {name: "Yangibozor", code: "yangibozor"}
+    ]
+  },
+  namangan: {
+    name: "Namangan viloyati",
+    districts: [
+      {name: "Namangan shahar", code: "namangan_shahar"},
+      {name: "Chortoq", code: "chortoq"},
+      {name: "Chust", code: "chust"},
+      {name: "Kosonsoy", code: "kosonsoy"},
+      {name: "Mingbuloq", code: "mingbuloq"},
+      {name: "Namangan tuman", code: "namangan_tuman"},
+      {name: "Norin", code: "norin"},
+      {name: "Pop", code: "pop"},
+      {name: "To'raqo'rg'on", code: "toraqorgon"},
+      {name: "Uchqo'rg'on", code: "uchqorgon"},
+      {name: "Uychi", code: "uychi"},
+      {name: "Yangiqo'rg'on", code: "yangiqorgon"}
+    ]
+  },
+  navoiy: {
+    name: "Navoiy viloyati",
+    districts: [
+      {name: "Navoiy shahar", code: "navoiy_shahar"},
+      {name: "Zarafshon", code: "zarafshon"},
+      {name: "Karmana", code: "karmana"},
+      {name: "Konimex", code: "konimex"},
+      {name: "Navbahor", code: "navbahor"},
+      {name: "Nurota", code: "nurota"},
+      {name: "Qiziltepa", code: "qiziltepa"},
+      {name: "Tomdi", code: "tomdi"},
+      {name: "Uchquduq", code: "uchquduq"}
+    ]
+  },
+  qashqadaryo: {
+    name: "Qashqadaryo viloyati",
+    districts: [
+      {name: "Qarshi shahar", code: "qarshi_shahar"},
+      {name: "Shahrisabz shahar", code: "shahrisabz_shahar"},
+      {name: "Chiroqchi", code: "chiroqchi"},
+      {name: "Dehqonobod", code: "dehqonobod"},
+      {name: "G'uzor", code: "guzor"},
+      {name: "Qarshi tuman", code: "qarshi_tuman"},
+      {name: "Kasbi", code: "kasbi"},
+      {name: "Kitob", code: "kitob"},
+      {name: "Koson", code: "koson"},
+      {name: "Mirishkor", code: "mirishkor"},
+      {name: "Muborak", code: "muborak"},
+      {name: "Nishon", code: "nishon"},
+      {name: "Qamashi", code: "qamashi"},
+      {name: "Shahrisabz tuman", code: "shahrisabz_tuman"},
+      {name: "Yakkabog'", code: "yakkabog"}
+    ]
+  },
+  samarqand: {
+    name: "Samarqand viloyati",
+    districts: [
+      {name: "Samarqand shahar", code: "samarqand_shahar"},
+      {name: "Kattaqo'rg'on", code: "kattaqorgon"},
+      {name: "Bulungur", code: "bulungur"},
+      {name: "Ishtixon", code: "ishtixon"},
+      {name: "Jomboy", code: "jomboy"},
+      {name: "Kattaqo'rg'on tuman", code: "kattaqorgon_tuman"},
+      {name: "Narpay", code: "narpay"},
+      {name: "Nurobod", code: "nurobod"},
+      {name: "Oqdaryo", code: "oqdaryo"},
+      {name: "Paxtachi", code: "paxtachi"},
+      {name: "Payariq", code: "payariq"},
+      {name: "Pastdarg'om", code: "pastdargom"},
+      {name: "Qo'shrabot", code: "qoshrabot"},
+      {name: "Samarqand tuman", code: "samarqand_tuman"},
+      {name: "Toyloq", code: "toyloq"},
+      {name: "Urgut", code: "urgut"}
+    ]
+  },
+  sirdaryo: {
+    name: "Sirdaryo viloyati",
+    districts: [
+      {name: "Guliston shahar", code: "guliston_shahar"},
+      {name: "Shirin shahar", code: "shirin_shahar"},
+      {name: "Yangiyer", code: "yangiyer"},
+      {name: "Boyovut", code: "boyovut"},
+      {name: "Guliston tuman", code: "guliston_tuman"},
+      {name: "Xovos", code: "xovos"},
+      {name: "Mirzaobod", code: "mirzaobod"},
+      {name: "Oqoltin", code: "oqoltin"},
+      {name: "Sardoba", code: "sardoba"},
+      {name: "Sayxunobod", code: "sayxunobod"},
+      {name: "Sirdaryo tuman", code: "sirdaryo_tuman"}
+    ]
+  },
+  surxondaryo: {
+    name: "Surxondaryo viloyati",
+    districts: [
+      {name: "Termiz shahar", code: "termiz_shahar"},
+      {name: "Angor", code: "angor"},
+      {name: "Boysun", code: "boysun"},
+      {name: "Denov", code: "denov"},
+      {name: "Jarqo'rg'on", code: "jarqorgon"},
+      {name: "Qiziriq", code: "qiziriq"},
+      {name: "Qumqo'rg'on", code: "qumqorgon"},
+      {name: "Muzrabot", code: "muzrabot"},
+      {name: "Oltinsoy", code: "oltinsoy"},
+      {name: "Sariosiyo", code: "sariosiyo"},
+      {name: "Sherobod", code: "sherobod"},
+      {name: "Sho'rchi", code: "shorchi"},
+      {name: "Termiz tuman", code: "termiz_tuman"},
+      {name: "Uzun", code: "uzun"},
+      {name: "Bandixon", code: "bandixon"}
+    ]
+  },
+  toshkent_viloyat: {
+    name: "Toshkent viloyati",
+    districts: [
+      {name: "Angren", code: "angren"},
+      {name: "Bekobod shahar", code: "bekobod_shahar"},
+      {name: "Chirchiq shahar", code: "chirchiq_shahar"},
+      {name: "Olmaliq", code: "olmaliq"},
+      {name: "Ohangaron shahar", code: "ohangaron_shahar"},
+      {name: "Akkurgan", code: "akkurgan"},
+      {name: "Bekobod tuman", code: "bekobod_tuman"},
+      {name: "Bo'ka", code: "boka"},
+      {name: "Bo'stonliq", code: "bostonliq"},
+      {name: "Chinoz", code: "chinoz"},
+      {name: "Chirchiq tuman", code: "chirchiq_tuman"},
+      {name: "Qibray", code: "qibray"},
+      {name: "Ohangaron tuman", code: "ohangaron_tuman"},
+      {name: "Oqqo'rg'on", code: "oqqorgon"},
+      {name: "Parkent", code: "parkent"},
+      {name: "Piskent", code: "piskent"},
+      {name: "Quyi Chirchiq", code: "quyi_chirchiq"},
+      {name: "Yangiyul", code: "yangiyul"},
+      {name: "Yuqori Chirchiq", code: "yuqori_chirchiq"},
+      {name: "Zangiota", code: "zangiota"}
+    ]
+  },
+  qoraqalpogiston: {
+    name: "Qoraqalpog'iston Respublikasi",
+    districts: [
+      {name: "Nukus shahar", code: "nukus"},
+      {name: "Amudaryo", code: "amudaryo"},
+      {name: "Beruniy", code: "beruniy"},
+      {name: "Chimboy", code: "chimboy"},
+      {name: "Ellikqala", code: "ellikqala"},
+      {name: "Kegeyli", code: "kegeyli"},
+      {name: "Qanliko'l", code: "qanlikol"},
+      {name: "Qo'ng'irot", code: "qongirot"},
+      {name: "Qoraozo'n", code: "qoraozon"},
+      {name: "Mo'ynoq", code: "moynoq"},
+      {name: "Nukus tuman", code: "nukus_tuman"},
+      {name: "Shumanay", code: "shumanay"},
+      {name: "Taxtako'pir", code: "taxtakopir"},
+      {name: "To'rtko'l", code: "tortkol"},
+      {name: "Xo'jayli", code: "xojayli"},
+      {name: "Bozataw", code: "bozataw"}
+    ]
+  }
+};
+
+const MIROBOD_DATA = {
+  dispensaries: [
+    {
+      id: 1,
+      title: "🔬 Dermatovenerolog",
+      subtitle: "8-sonli Tumanlararo Teri-tanosil kasalliklar dispanseri",
+      address: "Yashnobod tumani, Zoxidov ko'chasi, 8-uy",
+      addressNote: "(Jarqo'rg'on, Davr bekati)",
+      hours: "08:00 – 12:00",
+      phones: ["71-291-47-80", "71-291-33-71"],
+      coords: [41.3672, 69.3116]
+    },
+    {
+      id: 2,
+      title: "🫁 Ftiziator",
+      subtitle: "5-son Tumanlararo Ftiziateriya dispanseri",
+      address: "Mirobod tumani, 8-Mart ko'chasi, 59-uy",
+      hours: "08:00 – 16:00",
+      phones: ["71-283-98-81"],
+      coords: [41.2809, 69.2954]
+    },
+    {
+      id: 3,
+      title: "🧠 Psixiatr",
+      subtitle: "2-son Shahar Ruhiy-asab kasalliklari dispanseri",
+      address: "Yashnobod tumani, Qorasuv ko'chasi, 25-uy",
+      addressNote: "(Lisunova, Dvorets Aviastroiteley)",
+      hours: "08:00 – 16:00",
+      phones: ["71-294-74-65"],
+      coords: [41.2939, 69.3400]
+    },
+    {
+      id: 4,
+      title: "💊 Narkolog",
+      subtitle: "Narkologiya dispanseri — Toshkent shahar filiali (RIRSITMNB)",
+      address: "Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy",
+      addressNote: "(Nuroniylar sanatoriyasi yaqinida)",
+      hours: "08:00 – 15:00",
+      coords: [41.3804, 69.3166]
+    }
+  ],
+  polyclinicTests: [
+    {
+      step: 1,
+      name: "OIV tekshiruvi (117-kod)",
+      location: "🚪 1-qavat, 14a-xona",
+      tag: "Du/Chor/Ju 08–09",
+      special: true
+    },
+    {
+      step: 2,
+      name: "Umumiy qon va qondagi qand",
+      location: "🚪 2-qavat, 35-xona",
+      tag: "Laboratoriya"
+    },
+    {
+      step: 3,
+      name: "EKG (elektrokardiogramma)",
+      location: "🚪 2-qavat, 32-xona",
+      tag: "Yurak"
+    },
+    {
+      step: 4,
+      name: "UTT tekshiruvi (ultratovush)",
+      location: "🚪 1-qavat, 14-xona",
+      tag: "Ultratovush"
+    },
+    {
+      step: 5,
+      name: "Ginekolog",
+      location: "🚪 2-qavat, 17-xona",
+      tag: "Ayollar"
+    },
+    {
+      step: 6,
+      name: "Urolog",
+      location: "🚪 2-qavat, 30-xona",
+      tag: "Erkaklar"
+    },
+    {
+      step: 7,
+      name: "Endokrinolog",
+      location: "🚪 2-qavat, 24-xona",
+      tag: "Gormon"
+    },
+    {
+      step: 8,
+      name: "Revmatolog",
+      location: "🚪 2-qavat, 29-xona",
+      tag: "Bo'g'im"
+    }
+  ],
+  conclusion: {
+    location: "Mirobod TTB MKP — 3-qavat, 49-xona",
+    description: "Barcha dispanser va poliklinika ma'lumotnomalarini olib keling. Shu yerda yakuniy tibbiy xulosa beriladi."
+  },
+  contact: {
+    name: "Mirobod TTB — Masul Shaxs",
+    description: "Nikoh tibbiy ko'rigi bo'yicha barcha savollaringizga javob beramiz",
+    telegram: "MN_889G"
+  },
+  faq: [
+    {
+      question: "📋 Qanday hujjatlar kerak?",
+      answer: "Pasport asl nusxasi va fotokopiyasi, propiska (ro'yxatdan o'tish) fotokopiyasi. Ayrim joylar qo'shimcha hujjat so'rashi mumkin."
+    },
+    {
+      question: "⏱️ Hammasi qancha vaqt oladi?",
+      answer: "Odatda 2–4 kun. Dispanserlarga alohida kunlarda borish qulay. Poliklinika tekshiruvlarini bir kunda o'tish mumkin, lekin OIV uchun faqat Du/Chor/Juma kunlari boring."
+    },
+    {
+      question: "💰 Tekshiruvlar pulli yoki beplatmi?",
+      answer: "Asosiy tibbiy ko'rik bepul. Lekin ba'zi dispanserlarda hujjat rasmiylashtiruvi uchun to'lov bo'lishi mumkin. Aniq ma'lumot uchun masul shaxs bilan bog'laning."
+    },
+    {
+      question: "🕐 Qaysi dispanserlarga avval borish kerak?",
+      answer: "Ketma-ketlik muhim emas. Lekin <strong>Dermatovenerolog</strong>ga 08:00–12:00 orasida boring (qabul vaqti qisqa). Narkolog 08:00–15:00 gacha."
+    },
+    {
+      question: "📞 Savollarim bo'lsa kimga murojaat qilaman?",
+      answer: "Quyidagi \"Bog'lanish\" bo'limidagi telefon yoki Telegram orqali masul shaxs bilan bog'laning. Javob vaqti — ish kuni soatlari ichida."
+    }
+  ]
+};
+
+// ─── APP STATE ───
+let map = null;
+let currentView = 'main';
+let currentRegion = null;
+let currentDistrict = null;
+let geojsonLayer = null;
+let searchData = [];
+
+// ─── INITIALIZE APP ───
+document.addEventListener('DOMContentLoaded', function() {
+  initializeApp();
+});
+
+function initializeApp() {
+  initializeMap();
+  loadRegionsData();
+  initializeSearch();
+  initializeRouting();
+  loadAnimations();
+}
+
+// ─── MAP INITIALIZATION ───
+function initializeMap() {
+  const mapDiv = document.getElementById('map');
+  mapDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Xarita yuklanmoqda...</div></div>';
+
+  // Initialize Leaflet map
+  map = L.map('map', {
+    center: [41.3, 64.5],
+    zoom: 6,
+    zoomControl: true
+  });
+
+  // Add tile layer (OpenStreetMap)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18
+  }).addTo(map);
+
+  // Load GeoJSON data
+  loadGeoJSONData();
+}
+
+function loadGeoJSONData() {
+  const geojsonUrl = 'data/uzbekistan.json';
+
+  fetch(geojsonUrl)
+    .then(response => {
+      if (!response.ok) throw new Error('HTTP error ' + response.status);
+      return response.json();
+    })
+    .then(data => {
+      renderMapData(data);
+    })
+    .catch(error => {
+      console.error('GeoJSON yuklanmadi:', error);
+      showMapFallback();
+    });
+}
+
+function renderMapData(geojsonData) {
+  const colors = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+    '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D2B4DE'
+  ];
+
+  let colorIndex = 0;
+
+  geojsonLayer = L.geoJSON(geojsonData, {
+    style: function(feature) {
+      return {
+        fillColor: colors[colorIndex++ % colors.length],
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      const regionName = getRegionNameFromFeature(feature);
+      const regionKey = findRegionKey(regionName);
+
+      if (regionKey) {
+        const regionData = REGIONS[regionKey];
+
+        layer.bindPopup(`
+          <div style="font-family: 'Rubik', sans-serif;">
+            <h3 style="margin: 0 0 0.5rem; font-size: 1rem;">${regionData.name}</h3>
+            <p style="margin: 0; font-size: 0.85rem; color: #666;">${regionData.districts.length} ta tuman</p>
+          </div>
+        `);
+
+        layer.on({
+          mouseover: function(e) {
+            this.setStyle({
+              weight: 3,
+              color: '#1a73e8',
+              fillOpacity: 0.9
+            });
+          },
+          mouseout: function(e) {
+            geojsonLayer.resetStyle(this);
+          },
+          click: function(e) {
+            showRegionView(regionKey);
+          }
+        });
+      }
+    }
+  });
+
+  geojsonLayer.addTo(map);
+  map.fitBounds(geojsonLayer.getBounds());
+}
+
+function getRegionNameFromFeature(feature) {
+  const props = feature.properties;
+  return props.name_uz || props.name || props.ADM1_UZ || props.ADM1_EN || props.NAME_1 || '';
+}
+
+function findRegionKey(regionName) {
+  const normalized = regionName.toLowerCase().replace(/['\s-]/g, '');
+
+  const mappings = {
+    'toshkentshahri': 'toshkent_shahar',
+    'toshkentviloyati': 'toshkent_viloyat',
+    'andijonviloyati': 'andijon',
+    'buxoroviloyati': 'buxoro',
+    'fargonaviloyati': 'fargona',
+    'jizzaxviloyati': 'jizzax',
+    'xorazmviloyati': 'xorazm',
+    'namanganviloyati': 'namangan',
+    'navoiyviloyati': 'navoiy',
+    'qashqadaryoviloyati': 'qashqadaryo',
+    'samarqandviloyati': 'samarqand',
+    'sirdaryoviloyati': 'sirdaryo',
+    'surxondaryoviloyati': 'surxondaryo',
+    'qoraqalpogistonrespublikasi': 'qoraqalpogiston',
+    // Fallback shorter matches
+    'toshkent': 'toshkent_shahar',
+    'tashkent': 'toshkent_shahar',
+    'andijon': 'andijon',
+    'andijan': 'andijon',
+    'buxoro': 'buxoro',
+    'bukhara': 'buxoro',
+    'fargona': 'fargona',
+    'ferghana': 'fargona',
+    'jizzax': 'jizzax',
+    'xorazm': 'xorazm',
+    'khorezm': 'xorazm',
+    'namangan': 'namangan',
+    'navoiy': 'navoiy',
+    'qashqadaryo': 'qashqadaryo',
+    'samarqand': 'samarqand',
+    'sirdaryo': 'sirdaryo',
+    'surxondaryo': 'surxondaryo',
+    'qoraqalpogiston': 'qoraqalpogiston',
+    'karakalpakstan': 'qoraqalpogiston'
+  };
+
+  // Try exact match first (longer keys first)
+  const sortedKeys = Object.keys(mappings).sort((a, b) => b.length - a.length);
+  for (const key of sortedKeys) {
+    if (normalized.includes(key)) {
+      return mappings[key];
+    }
+  }
+
+  return null;
+}
+
+function showMapFallback() {
+  document.getElementById('map').innerHTML = `
+    <div class="loading">
+      <div>⚠️ Xarita yuklanmadi</div>
+      <div style="font-size: 0.8rem; margin-top: 0.5rem;">Viloyatlar ro'yxati quyida keltirilgan</div>
+    </div>
+  `;
+}
+
+// ─── DATA LOADING ───
+function loadRegionsData() {
+  buildSearchData();
+  renderRegionsGrid();
+}
+
+function buildSearchData() {
+  searchData = [];
+
+  Object.keys(REGIONS).forEach(regionKey => {
+    const region = REGIONS[regionKey];
+
+    searchData.push({
+      type: 'region',
+      name: region.name,
+      key: regionKey,
+      searchTerms: region.name.toLowerCase()
+    });
+
+    region.districts.forEach(district => {
+      searchData.push({
+        type: 'district',
+        name: district.name,
+        code: district.code,
+        regionName: region.name,
+        regionKey: regionKey,
+        searchTerms: `${district.name} ${region.name}`.toLowerCase()
+      });
+    });
+  });
+}
+
+function renderRegionsGrid() {
+  const grid = document.getElementById('regionsGrid');
+
+  grid.innerHTML = Object.keys(REGIONS).map(key => {
+    const region = REGIONS[key];
+    return `
+      <div class="region-card" onclick="showRegionView('${key}')">
+        <div class="region-name">${region.name}</div>
+        <div class="region-districts">${region.districts.length} ta tuman</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── SEARCH FUNCTIONALITY ───
+function initializeSearch() {
+  const searchInput = document.getElementById('searchInput');
+
+  searchInput.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase().trim();
+
+    if (query.length < 2) {
+      renderRegionsGrid();
+      return;
+    }
+
+    const results = searchData.filter(item =>
+      item.searchTerms.includes(query)
+    ).slice(0, 10);
+
+    renderSearchResults(results);
+  });
+}
+
+function renderSearchResults(results) {
+  const grid = document.getElementById('regionsGrid');
+
+  if (results.length === 0) {
+    grid.innerHTML = '<div style="text-align: center; color: var(--muted); padding: 2rem;">Hech narsa topilmadi</div>';
+    return;
+  }
+
+  grid.innerHTML = results.map(item => {
+    if (item.type === 'region') {
+      return `
+        <div class="region-card" onclick="showRegionView('${item.key}')">
+          <div class="region-name">📍 ${item.name}</div>
+          <div class="region-districts">Viloyat</div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="district-card" onclick="showDistrictView('${item.regionKey}', '${item.code}')">
+          <div class="district-name">🏘 ${item.name}</div>
+          <div class="district-code">${item.regionName}</div>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+// ─── VIEW MANAGEMENT ───
+function showView(viewName) {
+  document.querySelectorAll('.view').forEach(view => {
+    view.classList.remove('active');
+  });
+
+  document.getElementById(viewName + 'View').classList.add('active');
+  currentView = viewName;
+
+  window.scrollTo(0, 0);
+}
+
+function showMainView() {
+  showView('main');
+  currentRegion = null;
+  currentDistrict = null;
+
+  document.getElementById('searchInput').value = '';
+  renderRegionsGrid();
+
+  window.location.hash = '';
+}
+
+function showRegionView(regionKey) {
+  const region = REGIONS[regionKey];
+  if (!region) return;
+
+  currentRegion = regionKey;
+  showView('region');
+
+  // Update breadcrumbs
+  document.getElementById('regionBreadcrumb').textContent = region.name;
+  document.getElementById('regionTitle').textContent = region.name;
+
+  // Render districts grid
+  const districtsGrid = document.getElementById('districtsGrid');
+  districtsGrid.innerHTML = region.districts.map(district => `
+    <div class="district-card" onclick="showDistrictView('${regionKey}', '${district.code}')">
+      <div class="district-name">${district.name}</div>
+      <div class="district-code">${district.code}</div>
+    </div>
+  `).join('');
+
+  // Update URL
+  window.location.hash = `region=${regionKey}`;
+}
+
+function showDistrictView(regionKey, districtCode) {
+  const region = REGIONS[regionKey];
+  const district = region.districts.find(d => d.code === districtCode);
+
+  if (!region || !district) return;
+
+  currentRegion = regionKey;
+  currentDistrict = districtCode;
+  showView('district');
+
+  // Update breadcrumbs
+  document.getElementById('districtRegionBreadcrumb').textContent = region.name;
+  document.getElementById('districtRegionBreadcrumb').onclick = () => showRegionView(regionKey);
+  document.getElementById('districtBreadcrumb').textContent = district.name;
+  document.getElementById('districtTitle').textContent = district.name;
+
+  // Render district content
+  renderDistrictContent(regionKey, districtCode);
+
+  // Update URL
+  window.location.hash = `region=${regionKey}&district=${districtCode}`;
+}
+
+function renderDistrictContent(regionKey, districtCode) {
+  const contentDiv = document.getElementById('districtContent');
+
+  if (regionKey === 'toshkent_shahar' && districtCode === 'mirobod') {
+    renderMirobodContent(contentDiv);
+  } else {
+    renderGenericDistrictContent(contentDiv, regionKey, districtCode);
+  }
+}
+
+function renderMirobodContent(container) {
+  const data = MIROBOD_DATA;
+
+  container.innerHTML = `
+    <div class="alert alert-orange">
+      <span class="alert-icon">⏰</span>
+      <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">🏨</div>
+      <div>
+        <h2>1-QADAM: Dispanserlar</h2>
+        <p>Quyidagi 4 ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+      </div>
+    </div>
+
+    ${data.dispensaries.map((disp, index) => `
+      <div class="disp-card">
+        <div class="disp-card-top">
+          <div class="disp-num n${index + 1}">${disp.id}</div>
+          <div>
+            <div class="disp-title">${disp.title}</div>
+            <div class="disp-subtitle">${disp.subtitle}</div>
+          </div>
+        </div>
+        <div class="disp-body">
+          <div class="info-item">
+            <span class="emoji">📍</span>
+            <span class="label">Manzil</span>
+            <span class="value">${disp.address}${disp.addressNote ? `<br><em style="color:var(--muted);font-size:0.78rem;">${disp.addressNote}</em>` : ''}</span>
+          </div>
+          <div class="info-item">
+            <span class="emoji">🕐</span>
+            <span class="label">Qabul</span>
+            <span class="value"><span class="time-badge">${disp.hours}</span></span>
+          </div>
+          ${disp.phones ? `
+            <div class="info-item">
+              <span class="emoji">📞</span>
+              <span class="label">Telefon</span>
+              <span class="value">${disp.phones.join(' | ')}</span>
+            </div>
+          ` : ''}
+        </div>
+        ${disp.coords ? `
+          <div class="map-block">
+            <div class="map-addr">📍 ${disp.address}${disp.addressNote ? ` ${disp.addressNote}` : ''}</div>
+            <div class="map-btns">
+              <a href="https://maps.google.com/?q=${disp.coords[0]},${disp.coords[1]}" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
+              <a href="https://2gis.uz/tashkent?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+              <a href="geo:${disp.coords[0]},${disp.coords[1]}?q=${disp.coords[0]},${disp.coords[1]}" class="map-btn map-btn-n">🧭 Navigatsiya</a>
+            </div>
+          </div>
+        ` : ''}
+        <div class="disp-actions">
+          ${disp.phones ? disp.phones.map(phone => `
+            <a href="tel:+998${phone.replace(/-/g, '')}" class="btn btn-call">📞 ${phone}</a>
+          `).join('') : ''}
+          ${disp.coords ? `
+            <a href="https://2gis.uz/tashkent?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
+          ` : ''}
+        </div>
+      </div>
+    `).join('')}
+
+    <div class="section-header">
+      <div class="section-icon si-blue">🏥</div>
+      <div>
+        <h2>2-QADAM: Poliklinika Tekshiruvlari</h2>
+        <p>Dispanserlardan keyin, o'z poliklinikangizda quyidagi tahlillardan o'ting</p>
+      </div>
+    </div>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Pasport + propiska nusxasini</strong> olib keling. OIV tekshiruvi uchun faqat <strong>Dushanba, Chorshanba, Juma</strong> kunlari, <strong>08:00–09:00</strong> orasida boring.</span>
+    </div>
+
+    <div class="poly-card">
+      ${data.polyclinicTests.map(test => `
+        <div class="poly-step">
+          <div class="step-circle">${test.step}</div>
+          <div class="step-info">
+            <div class="step-name">${test.name}</div>
+            <div class="step-loc">${test.location}</div>
+          </div>
+          <div class="step-tag${test.special ? ' special' : ''}">${test.tag}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">📄</div>
+      <div>
+        <h2>3-QADAM: Xulosa Olish</h2>
+        <p>Barcha tekshiruvlar tugagach shu xonaga boring</p>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <span class="alert-icon">✅</span>
+      <div>
+        <strong>${data.conclusion.location}</strong><br>
+        <span style="font-size:0.82rem;">${data.conclusion.description}</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">❓</div>
+      <div>
+        <h2>Ko'p So'raladigan Savollar</h2>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      ${data.faq.map(item => `
+        <div class="tip-item" onclick="this.classList.toggle('open')">
+          <div class="tip-q"><span>${item.question}</span><span class="tip-toggle">+</span></div>
+          <div class="tip-a">${item.answer}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">📞</div>
+      <div>
+        <h2>Masul Shaxs</h2>
+        <p>Savol yoki muammo bo'lsa, darhol murojaat qiling</p>
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <div class="cc-icon">👨‍⚕️</div>
+      <h3>${data.contact.name}</h3>
+      <p>${data.contact.description}</p>
+      <div class="contact-btns">
+        <a href="https://t.me/${data.contact.telegram}" target="_blank" class="cbtn cbtn-tg">✈️ @${data.contact.telegram}</a>
+      </div>
+    </div>
+  `;
+}
+
+function renderGenericDistrictContent(container, regionKey, districtCode) {
+  const region = REGIONS[regionKey];
+  const district = region.districts.find(d => d.code === districtCode);
+
+  container.innerHTML = `
+    <div class="alert alert-blue">
+      <span class="alert-icon">🔄</span>
+      <span><strong>${district.name} tumani</strong> uchun aniq ma'lumotlar hozirda tayyorlanmoqda. Umumiy qo'llanmadan foydalaning.</span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">🏨</div>
+      <div>
+        <h2>1-QADAM: Dispanserlar</h2>
+        <p>Quyidagi 4 ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+      </div>
+    </div>
+
+    <div class="alert alert-orange">
+      <span class="alert-icon">⏰</span>
+      <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n1">1</div>
+        <div>
+          <div class="disp-title">🔬 Dermatovenerolog</div>
+          <div class="disp-subtitle">Teri-tanosil kasalliklari dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 12:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n2">2</div>
+        <div>
+          <div class="disp-title">🫁 Ftiziator</div>
+          <div class="disp-subtitle">Ftiziateriya dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n3">3</div>
+        <div>
+          <div class="disp-title">🧠 Psixiatr</div>
+          <div class="disp-subtitle">Ruhiy-asab kasalliklari dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n4">4</div>
+        <div>
+          <div class="disp-title">💊 Narkolog</div>
+          <div class="disp-subtitle">Narkologiya dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 15:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">🏥</div>
+      <div>
+        <h2>2-QADAM: Poliklinika Tekshiruvlari</h2>
+        <p>Dispanserlardan keyin, o'z poliklinikangizda quyidagi tahlillardan o'ting</p>
+      </div>
+    </div>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Pasport + propiska nusxasini</strong> olib keling. OIV tekshiruvi uchun faqat <strong>Dushanba, Chorshanba, Juma</strong> kunlari boring.</span>
+    </div>
+
+    <div class="poly-card">
+      <div class="poly-step">
+        <div class="step-circle">1</div>
+        <div class="step-info">
+          <div class="step-name">OIV tekshiruvi (117-kod)</div>
+          <div class="step-loc">🚪 Laboratoriya</div>
+        </div>
+        <div class="step-tag special">Du/Chor/Ju</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">2</div>
+        <div class="step-info">
+          <div class="step-name">Umumiy qon va qondagi qand</div>
+          <div class="step-loc">🚪 Laboratoriya</div>
+        </div>
+        <div class="step-tag">Tahlil</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">3</div>
+        <div class="step-info">
+          <div class="step-name">EKG (elektrokardiogramma)</div>
+          <div class="step-loc">🚪 Funksional diagnostika</div>
+        </div>
+        <div class="step-tag">Yurak</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">4</div>
+        <div class="step-info">
+          <div class="step-name">UTT tekshiruvi</div>
+          <div class="step-loc">🚪 Ultratovush xonasi</div>
+        </div>
+        <div class="step-tag">UZI</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">5</div>
+        <div class="step-info">
+          <div class="step-name">Ginekolog / Urolog</div>
+          <div class="step-loc">🚪 Mutaxassis xonasi</div>
+        </div>
+        <div class="step-tag">Ko'rik</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">6</div>
+        <div class="step-info">
+          <div class="step-name">Endokrinolog</div>
+          <div class="step-loc">🚪 Mutaxassis xonasi</div>
+        </div>
+        <div class="step-tag">Gormon</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">7</div>
+        <div class="step-info">
+          <div class="step-name">Revmatolog</div>
+          <div class="step-loc">🚪 Mutaxassis xonasi</div>
+        </div>
+        <div class="step-tag">Bo'g'im</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">📄</div>
+      <div>
+        <h2>3-QADAM: Xulosa Olish</h2>
+        <p>Barcha tekshiruvlar tugagach mahalliy TTB ga murojaat qiling</p>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <span class="alert-icon">✅</span>
+      <div>
+        <strong>${district.name} TTB</strong><br>
+        <span style="font-size:0.82rem;">Barcha dispanser va poliklinika ma'lumotnomalarini olib keling. Shu yerda yakuniy tibbiy xulosa beriladi.</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">📞</div>
+      <div>
+        <h2>Ma'lumot Olish</h2>
+        <p>Aniq ma'lumot olish uchun mahalliy TTB ga murojaat qiling</p>
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <div class="cc-icon">🏥</div>
+      <h3>${district.name} TTB</h3>
+      <p>Nikoh tibbiy ko'rigi bo'yicha ma'lumot olish uchun to'g'ridan-to'g'ri murojaat qiling</p>
+    </div>
+  `;
+}
+
+// ─── ROUTING ───
+function initializeRouting() {
+  // Handle initial hash
+  handleHashChange();
+
+  // Listen for hash changes
+  window.addEventListener('hashchange', handleHashChange);
+}
+
+function handleHashChange() {
+  const hash = window.location.hash.substring(1);
+
+  if (!hash) {
+    showMainView();
+    return;
+  }
+
+  const params = new URLSearchParams(hash);
+  const region = params.get('region');
+  const district = params.get('district');
+
+  if (region && district) {
+    showDistrictView(region, district);
+  } else if (region) {
+    showRegionView(region);
+  } else {
+    showMainView();
+  }
+}
+
+// ─── ANIMATIONS ───
+function loadAnimations() {
+  // Fade in animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
@@ -801,13 +1684,24 @@
       }
     });
   }, { threshold: 0.1 });
-  faders.forEach(el => observer.observe(el));
 
-  // ─── Back to top button ───
+  // Observe fade-in elements
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Back to top button
   const backTop = document.getElementById('backTop');
-  window.addEventListener('scroll', () => {
-    backTop.classList.toggle('show', window.scrollY > 400);
-  });
+  if (backTop) {
+    window.addEventListener('scroll', () => {
+      backTop.classList.toggle('show', window.scrollY > 400);
+    });
+
+    backTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+}
 </script>
+
 </body>
 </html>
