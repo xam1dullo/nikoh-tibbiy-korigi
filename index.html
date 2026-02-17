@@ -112,9 +112,73 @@
   }
   .section-header p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
 
+  /* ─── MAP INFO & LEGEND ─── */
+  .info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 8px;
+  }
+  .info h4 {
+    margin: 0 0 5px;
+    color: #777;
+    font-size: 13px;
+  }
+  .info b { color: #333; }
+  .info .info-value {
+    font-size: 1.3em;
+    font-weight: 800;
+    color: var(--primary);
+  }
+
+  .legend {
+    line-height: 20px;
+    color: #555;
+    padding: 8px 12px !important;
+  }
+  .legend h4 {
+    font-size: 12px;
+    margin: 0 0 6px;
+  }
+  .legend i {
+    width: 20px;
+    height: 14px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.8;
+    border-radius: 3px;
+  }
+  .legend .legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    font-size: 12px;
+  }
+
+  .map-back-btn {
+    background: #fff;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: all 0.2s;
+  }
+  .map-back-btn:hover {
+    background: #f0f0f0;
+    transform: scale(1.03);
+  }
+
   /* ─── MAP STYLES ─── */
   #map {
-    height: 400px;
+    height: 500px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     margin-bottom: 1.5rem;
@@ -647,6 +711,7 @@
 <script type="text/javascript" src="data/surxondaryo.js"></script>
 <script type="text/javascript" src="data/toshkent.js"></script>
 <script type="text/javascript" src="data/xorazm.js"></script>
+<script type="text/javascript" src="data.js"></script>
 
 <script>
 // ─── APP DATA (hardcoded REGIONS — endi GeoJSON dan olinadi) ───
@@ -1012,16 +1077,41 @@ function initializeMap() {
   showRegionsOnMap();
 }
 
-// ─── COLORS ───
-const MAP_COLORS = [
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-  '#F8C471', '#82E0AA', '#F1948A', '#AED6F1', '#D2B4DE'
-];
-
-function getRegionColor(index) {
-  return MAP_COLORS[index % MAP_COLORS.length];
+// ─── DATA-DRIVEN COLORS ───
+function getColor(d) {
+  return d > 1000 ? '#800026'
+       : d > 500  ? '#BD0026'
+       : d > 200  ? '#E31A1C'
+       : d > 100  ? '#FC4E2A'
+       : d > 50   ? '#FD8D3C'
+       : d > 20   ? '#FEB24C'
+       : d > 10   ? '#FED976'
+       : d > 0    ? '#FFEDA0'
+       :            '#E0E0E0';
 }
+
+function getFirstWordLowercase(str) {
+  let filter = str.replace(/[-',`ʻ]/g, '');
+  return filter.split(' ')[0].toLowerCase();
+}
+
+function getRegionValue(name) {
+  if (typeof data === 'undefined') return 0;
+  const regionData = data.regions.regionsData.find(r => r.name === name);
+  return regionData ? regionData.value : 0;
+}
+
+function getDistrictValue(regionName, districtName) {
+  if (typeof data === 'undefined' || !data[regionName]) return 0;
+  const districtData = data[regionName].subData.find(d => d.name === districtName);
+  return districtData ? districtData.value : 0;
+}
+
+// ─── MAP INFO CONTROL ───
+let infoControl = null;
+let legendControl = null;
+let backControl = null;
+let currentMapRegionName = null;
 
 // ─── SHOW REGIONS ON MAP ───
 function showRegionsOnMap() {
@@ -1030,22 +1120,61 @@ function showRegionsOnMap() {
     return;
   }
 
-  if (geojsonLayer) {
-    map.removeLayer(geojsonLayer);
-  }
+  if (geojsonLayer) map.removeLayer(geojsonLayer);
+  if (infoControl) map.removeControl(infoControl);
+  if (legendControl) map.removeControl(legendControl);
+  if (backControl) map.removeControl(backControl);
 
   mapLevel = 'regions';
-  let colorIndex = 0;
+  currentMapRegionName = null;
 
+  // Info control
+  infoControl = L.control({ position: 'topright' });
+  infoControl.onAdd = function() {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+  };
+  infoControl.update = function(props) {
+    if (props) {
+      const name = getFirstWordLowercase(props.name);
+      const value = getRegionValue(name);
+      this._div.innerHTML = '<h4>O\'zbekiston viloyatlari</h4>' +
+        '<b>' + props.name + '</b><br/>' +
+        '<span class="info-value">' + value + '</span> ta ma\'lumot';
+    } else {
+      this._div.innerHTML = '<h4>O\'zbekiston viloyatlari</h4>Viloyat ustiga boring';
+    }
+  };
+  infoControl.addTo(map);
+
+  // Legend
+  legendControl = L.control({ position: 'bottomright' });
+  legendControl.onAdd = function() {
+    const div = L.DomUtil.create('div', 'info legend');
+    const grades = [0, 10, 20, 50, 100, 200, 500, 1000];
+    div.innerHTML = '<h4>📊 Ma\'lumot miqdori</h4>';
+    for (let i = 0; i < grades.length; i++) {
+      div.innerHTML +=
+        '<div class="legend-item"><i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+') + '</div>';
+    }
+    return div;
+  };
+  legendControl.addTo(map);
+
+  // GeoJSON layer with data coloring
   geojsonLayer = L.geoJSON(GEOJSON_PATHS.regions, {
     style: function(feature) {
+      const name = getFirstWordLowercase(feature.properties.name);
+      const value = getRegionValue(name);
       return {
-        fillColor: getRegionColor(colorIndex++),
+        fillColor: getColor(value),
         weight: 2,
         opacity: 1,
-        color: '#75706f',
+        color: '#fff',
         dashArray: '3',
-        fillOpacity: 0.7
+        fillOpacity: 0.75
       };
     },
     onEachFeature: function(feature, layer) {
@@ -1053,31 +1182,36 @@ function showRegionsOnMap() {
       const regionKey = findRegionKeyFromGeoJSON(name);
       const regionData = regionKey ? REGIONS[regionKey] : null;
       const displayName = regionData ? regionData.name : feature.properties.name;
-      const districtCount = regionData ? regionData.districts.length : 0;
+      const nameKey = getFirstWordLowercase(feature.properties.name);
+      const value = getRegionValue(nameKey);
 
-      // Tooltip with region name
-      layer.bindTooltip(displayName, {
-        permanent: false,
-        direction: 'center',
-        className: 'info'
-      });
+      // Permanent tooltip with value
+      if (value > 0) {
+        layer.bindTooltip(String(value), {
+          permanent: true,
+          direction: 'center',
+          className: 'info',
+          opacity: 0.85
+        });
+      }
 
       layer.on({
         mouseover: function(e) {
           this.setStyle({
-            weight: 5,
-            color: '#666',
+            weight: 4,
+            color: '#333',
             dashArray: '',
-            fillOpacity: 0.85
+            fillOpacity: 0.9
           });
           this.bringToFront();
+          infoControl.update(feature.properties);
         },
         mouseout: function(e) {
           geojsonLayer.resetStyle(this);
+          infoControl.update();
         },
         click: function(e) {
           if (regionKey) {
-            // Zoom to region and show districts on map
             map.fitBounds(this.getBounds());
             showDistrictsOnMap(regionKey);
             showRegionView(regionKey);
@@ -1098,48 +1232,109 @@ function showDistrictsOnMap(regionKey) {
 
   if (!districtGeoJSON) return;
 
-  if (geojsonLayer) {
-    map.removeLayer(geojsonLayer);
-  }
+  if (geojsonLayer) map.removeLayer(geojsonLayer);
+  if (infoControl) map.removeControl(infoControl);
+  if (legendControl) map.removeControl(legendControl);
+  if (backControl) map.removeControl(backControl);
 
   mapLevel = regionKey;
-  let colorIndex = 0;
+  currentMapRegionName = geoKey;
 
+  // Info control for districts
+  infoControl = L.control({ position: 'topright' });
+  infoControl.onAdd = function() {
+    this._div = L.DomUtil.create('div', 'info');
+    this.update();
+    return this._div;
+  };
+  infoControl.update = function(props) {
+    const regionDisplayName = REGIONS[regionKey] ? REGIONS[regionKey].name : geoKey;
+    if (props) {
+      const name = getFirstWordLowercase(props.name);
+      const value = getDistrictValue(geoKey, name);
+      this._div.innerHTML = '<h4>' + regionDisplayName + '</h4>' +
+        '<b>' + props.name + '</b><br/>' +
+        '<span class="info-value">' + value + '</span> ta ma\'lumot';
+    } else {
+      this._div.innerHTML = '<h4>' + regionDisplayName + '</h4>Tuman ustiga boring';
+    }
+  };
+  infoControl.addTo(map);
+
+  // Legend
+  legendControl = L.control({ position: 'bottomright' });
+  legendControl.onAdd = function() {
+    const div = L.DomUtil.create('div', 'info legend');
+    const grades = [0, 10, 20, 50, 100, 200, 500, 1000];
+    div.innerHTML = '<h4>📊 Ma\'lumot miqdori</h4>';
+    for (let i = 0; i < grades.length; i++) {
+      div.innerHTML +=
+        '<div class="legend-item"><i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+') + '</div>';
+    }
+    return div;
+  };
+  legendControl.addTo(map);
+
+  // Back button
+  backControl = L.control({ position: 'topleft' });
+  backControl.onAdd = function() {
+    const btn = L.DomUtil.create('div', 'map-back-btn');
+    btn.innerHTML = '← Ortga';
+    btn.onclick = function(e) {
+      L.DomEvent.stopPropagation(e);
+      showMainView();
+    };
+    L.DomEvent.disableClickPropagation(btn);
+    return btn;
+  };
+  backControl.addTo(map);
+
+  // GeoJSON layer with data coloring
   geojsonLayer = L.geoJSON(districtGeoJSON, {
     style: function(feature) {
+      const name = getFirstWordLowercase(feature.properties.name);
+      const value = getDistrictValue(geoKey, name);
       return {
-        fillColor: getRegionColor(colorIndex++),
+        fillColor: getColor(value),
         weight: 2,
         opacity: 1,
-        color: '#75706f',
+        color: '#fff',
         dashArray: '3',
-        fillOpacity: 0.7
+        fillOpacity: 0.75
       };
     },
     onEachFeature: function(feature, layer) {
       const districtName = feature.properties.name || '';
+      const nameKey = getFirstWordLowercase(districtName);
+      const value = getDistrictValue(geoKey, nameKey);
 
-      layer.bindTooltip(districtName, {
-        permanent: false,
-        direction: 'center',
-        className: 'info'
-      });
+      // Permanent tooltip with value
+      if (value > 0) {
+        layer.bindTooltip(String(value), {
+          permanent: true,
+          direction: 'center',
+          className: 'info',
+          opacity: 0.85
+        });
+      }
 
       layer.on({
         mouseover: function(e) {
           this.setStyle({
-            weight: 5,
+            weight: 4,
             color: '#1a73e8',
             dashArray: '',
-            fillOpacity: 0.85
+            fillOpacity: 0.9
           });
           this.bringToFront();
+          infoControl.update(feature.properties);
         },
         mouseout: function(e) {
           geojsonLayer.resetStyle(this);
+          infoControl.update();
         },
         click: function(e) {
-          // Try to find matching district code
           const districtCode = findDistrictCode(regionKey, districtName);
           if (districtCode) {
             showDistrictView(regionKey, districtCode);
