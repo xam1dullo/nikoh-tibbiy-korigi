@@ -222,15 +222,36 @@
   .btn-primary { background: var(--primary); color: #fff; }
   .btn-primary:hover { background: var(--primary-dark); }
 
-  /* ─── MAP EMBED ─── */
-  .map-embed {
-    margin: 0.25rem 1.1rem 0.85rem;
+  /* ─── MAP BLOCK ─── */
+  .map-block {
+    margin: 0 1.1rem 0.5rem;
     border-radius: var(--radius-sm);
-    overflow: hidden;
-    border: 1px solid var(--border);
-    height: 180px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%);
+    border: 1px solid #c8e6c9;
+    padding: 1rem;
+    display: flex; flex-direction: column; gap: 0.6rem;
   }
-  .map-embed iframe { width: 100%; height: 100%; display: block; border: 0; }
+  .map-block .map-addr {
+    font-size: 0.82rem; color: #374151; font-weight: 500;
+    display: flex; gap: 0.4rem; align-items: flex-start;
+  }
+  .map-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .map-btn {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.5rem 0.9rem; border-radius: 8px;
+    font-size: 0.78rem; font-weight: 700;
+    text-decoration: none; transition: all 0.18s;
+  }
+  .map-btn:active { transform: scale(0.96); }
+  .map-btn-g { background: #fff; border: 1.5px solid #4285f4; color: #1a56db; }
+  .map-btn-g:hover { background: #4285f4; color: #fff; }
+  .map-btn-2 { background: #fff; border: 1.5px solid #0f9d58; color: #065f46; }
+  .map-btn-2:hover { background: #0f9d58; color: #fff; }
+  .map-btn-n { background: #fff; border: 1.5px solid #f29900; color: #92400e; }
+  .map-btn-n:hover { background: #f29900; color: #fff; }
+  @media (max-width: 480px) {
+    .map-btn { flex: 1 1 auto; justify-content: center; }
+  }
 
   /* ─── POLYCLINIC STEPS ─── */
   .poly-card {
@@ -474,15 +495,18 @@
         <span class="value">71-291-47-80 &nbsp;|&nbsp; 71-291-33-71</span>
       </div>
     </div>
-    <div class="map-embed">
-      <iframe
-        src="https://yandex.uz/maps/?ll=69.3116,41.3672&z=15&l=map&pt=69.3116,41.3672,pm2rdl&mode=search"
-        loading="lazy" allowfullscreen title="Dermatovenerolog manzili"></iframe>
+    <div class="map-block">
+      <div class="map-addr">📍 Yashnobod tumani, Zoxidov ko'chasi, 8-uy (Jarqo'rg'on, Davr bekati)</div>
+      <div class="map-btns">
+        <a href="https://maps.google.com/?q=41.3672,69.3116" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
+        <a href="https://2gis.uz/tashkent?m=69.3116,41.3672/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+        <a href="geo:41.3672,69.3116?q=41.3672,69.3116" class="map-btn map-btn-n">🧭 Navigatsiya</a>
+      </div>
     </div>
     <div class="disp-actions">
       <a href="tel:+998712914780" class="btn btn-call">📞 71-291-47-80</a>
       <a href="tel:+998712913371" class="btn btn-call">📞 71-291-33-71</a>
-      <a href="https://yandex.uz/maps/?pt=69.3116,41.3672&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <a href="https://2gis.uz/tashkent?m=69.3116,41.3672/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
     </div>
   </div>
 
@@ -512,14 +536,17 @@
         <span class="value">71-283-98-81</span>
       </div>
     </div>
-    <div class="map-embed">
-      <iframe
-        src="https://yandex.uz/maps/?ll=69.2954,41.2809&z=15&l=map&pt=69.2954,41.2809,pm2rdl&mode=search"
-        loading="lazy" allowfullscreen title="Ftiziator manzili"></iframe>
+    <div class="map-block">
+      <div class="map-addr">📍 Mirobod tumani, 8-Mart ko'chasi, 59-uy</div>
+      <div class="map-btns">
+        <a href="https://maps.google.com/?q=41.2809,69.2954" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
+        <a href="https://2gis.uz/tashkent?m=69.2954,41.2809/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+        <a href="geo:41.2809,69.2954?q=41.2809,69.2954" class="map-btn map-btn-n">🧭 Navigatsiya</a>
+      </div>
     </div>
     <div class="disp-actions">
       <a href="tel:+998712839881" class="btn btn-call">📞 71-283-98-81</a>
-      <a href="https://yandex.uz/maps/?pt=69.2954,41.2809&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <a href="https://2gis.uz/tashkent?m=69.2954,41.2809/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
     </div>
   </div>
 
@@ -549,14 +576,17 @@
         <span class="value">71-294-74-65</span>
       </div>
     </div>
-    <div class="map-embed">
-      <iframe
-        src="https://yandex.uz/maps/?ll=69.3400,41.2939&z=15&l=map&pt=69.3400,41.2939,pm2rdl&mode=search"
-        loading="lazy" allowfullscreen title="Psixiatr manzili"></iframe>
+    <div class="map-block">
+      <div class="map-addr">📍 Yashnobod tumani, Qorasuv ko'chasi, 25-uy (Lisunova)</div>
+      <div class="map-btns">
+        <a href="https://maps.google.com/?q=41.2939,69.3400" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
+        <a href="https://2gis.uz/tashkent?m=69.3400,41.2939/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+        <a href="geo:41.2939,69.3400?q=41.2939,69.3400" class="map-btn map-btn-n">🧭 Navigatsiya</a>
+      </div>
     </div>
     <div class="disp-actions">
       <a href="tel:+998712947465" class="btn btn-call">📞 71-294-74-65</a>
-      <a href="https://yandex.uz/maps/?pt=69.3400,41.2939&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <a href="https://2gis.uz/tashkent?m=69.3400,41.2939/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
     </div>
   </div>
 
@@ -581,13 +611,16 @@
         <span class="value"><span class="time-badge">08:00 – 15:00</span></span>
       </div>
     </div>
-    <div class="map-embed">
-      <iframe
-        src="https://yandex.uz/maps/?ll=69.3166,41.3804&z=15&l=map&pt=69.3166,41.3804,pm2rdl&mode=search"
-        loading="lazy" allowfullscreen title="Narkolog manzili"></iframe>
+    <div class="map-block">
+      <div class="map-addr">📍 Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy (Nuroniylar sanatoriyasi)</div>
+      <div class="map-btns">
+        <a href="https://maps.google.com/?q=41.3804,69.3166" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
+        <a href="https://2gis.uz/tashkent?m=69.3166,41.3804/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+        <a href="geo:41.3804,69.3166?q=41.3804,69.3166" class="map-btn map-btn-n">🧭 Navigatsiya</a>
+      </div>
     </div>
     <div class="disp-actions">
-      <a href="https://yandex.uz/maps/?pt=69.3166,41.3804&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <a href="https://2gis.uz/tashkent?m=69.3166,41.3804/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
     </div>
   </div>
 
