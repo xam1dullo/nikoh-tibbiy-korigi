@@ -3,317 +3,778 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nikoh tibbiy ko'rigi — Mirobod tumani</title>
+<title>Nikoh Tibbiy Ko'rigi — Mirobod Tumani</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --green: #0f9d58;
+    --green-light: #e6f4ea;
+    --blue-light: #e8f0fe;
+    --orange: #f29900;
+    --orange-light: #fef3e2;
+    --red: #d93025;
+    --red-light: #fce8e6;
+    --purple: #7b2ff7;
+    --purple-light: #f0e8ff;
+    --bg: #f8faff;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --shadow: 0 2px 12px rgba(26,115,232,0.08);
+    --shadow-hover: 0 8px 24px rgba(26,115,232,0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a202c; }
+  html { scroll-behavior: smooth; }
 
-  header {
-    background: linear-gradient(135deg, #1a56db, #0e9f6e);
-    color: #fff; text-align: center; padding: 2rem 1rem 2.5rem;
-  }
-  header h1 { font-size: 1.5rem; margin-bottom: 0.4rem; }
-  header p { font-size: 0.9rem; opacity: 0.88; }
-
-  .badge {
-    display: inline-block; margin-top: 0.75rem;
-    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 99px; padding: 0.3rem 1rem; font-size: 0.75rem;
+  body {
+    font-family: 'Rubik', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .container { max-width: 680px; margin: 0 auto; padding: 1rem; }
-
-  .section-title {
-    font-size: 1.1rem; font-weight: 700; color: #1a56db;
-    margin: 1.5rem 0 0.75rem;
-    padding-left: 0.75rem;
-    border-left: 4px solid #0e9f6e;
+  /* ─── HERO HEADER ─── */
+  .hero {
+    background: linear-gradient(145deg, #1a73e8 0%, #0f9d58 100%);
+    color: #fff;
+    padding: 2.5rem 1.25rem 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-icon { font-size: 3.5rem; margin-bottom: 0.75rem; display: block; animation: pulse-icon 2s ease-in-out infinite; }
+  @keyframes pulse-icon { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .hero h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 900;
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+  .hero p { font-size: 0.95rem; opacity: 0.9; margin-bottom: 1.25rem; }
+  .hero-steps {
+    display: flex; justify-content: center; gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .hero-step {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 99px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    backdrop-filter: blur(6px);
   }
 
-  .card {
-    background: #fff; border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 1rem; overflow: hidden;
-  }
-
-  .card-header {
-    background: #ebf5ff; padding: 0.75rem 1rem;
-    display: flex; align-items: center; gap: 0.6rem;
-  }
-  .card-header .icon { font-size: 1.4rem; }
-  .card-header .spec { font-weight: 700; font-size: 0.95rem; color: #1a56db; }
-  .card-header .name { font-size: 0.78rem; color: #4a5568; margin-top: 0.1rem; }
-
-  .card-body { padding: 0.85rem 1rem; }
-  .info-row { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem; }
-  .info-row .lbl { color: #718096; min-width: 70px; font-size: 0.78rem; padding-top: 1px; }
-  .info-row .val { color: #2d3748; line-height: 1.4; }
-
-  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.5rem 1rem; border-radius: 8px;
-    font-size: 0.8rem; font-weight: 600; text-decoration: none;
-    transition: opacity 0.15s;
-  }
-  .btn:hover { opacity: 0.85; }
-  .btn-tel  { background: #e8f5e9; color: #1b5e20; }
-  .btn-map  { background: #fff3e0; color: #e65100; }
-
-  /* Polyclinic steps */
-  .step-list { list-style: none; padding: 0.5rem 0; }
-  .step-list li {
-    display: flex; gap: 0.75rem; align-items: flex-start;
-    padding: 0.6rem 1rem; border-bottom: 1px solid #f0f4f8;
-    font-size: 0.87rem;
-  }
-  .step-list li:last-child { border-bottom: none; }
-  .step-num {
-    min-width: 26px; height: 26px; border-radius: 50%;
-    background: #1a56db; color: #fff;
-    font-size: 0.75rem; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .step-text .room { font-size: 0.75rem; color: #718096; margin-top: 0.15rem; }
-
-  /* Note box */
-  .note {
-    background: #fffbeb; border: 1px solid #f6c90e;
-    border-radius: 10px; padding: 0.85rem 1rem;
-    font-size: 0.83rem; color: #92400e; margin-bottom: 1rem;
-    display: flex; gap: 0.5rem; align-items: flex-start;
-  }
-
-  /* Contact box */
-  .contact-box {
-    background: linear-gradient(135deg, #1a56db, #0e9f6e);
-    border-radius: 14px; color: #fff;
-    padding: 1.25rem; margin-bottom: 1.5rem;
+  /* ─── HOW TO USE BANNER ─── */
+  .how-banner {
+    background: #fff8e1;
+    border-bottom: 2px solid #ffe082;
+    padding: 1rem 1.25rem;
     text-align: center;
   }
-  .contact-box h3 { font-size: 1rem; margin-bottom: 0.5rem; }
-  .contact-box p { font-size: 0.82rem; opacity: 0.88; margin-bottom: 1rem; }
+  .how-banner p { font-size: 0.85rem; color: #5f4200; }
+  .how-banner strong { color: #e65100; }
+
+  /* ─── PROGRESS STEPS ─── */
+  .progress-bar {
+    background: #fff;
+    padding: 1.25rem 1.25rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .progress-bar h2 {
+    font-size: 0.75rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+  .steps-row {
+    display: flex; gap: 0.25rem; align-items: center;
+    overflow-x: auto; padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+  .steps-row::-webkit-scrollbar { display: none; }
+  .step-chip {
+    display: flex; align-items: center; gap: 0.35rem;
+    background: var(--blue-light);
+    border-radius: 99px; padding: 0.35rem 0.75rem;
+    font-size: 0.72rem; font-weight: 700; color: var(--primary);
+    white-space: nowrap; text-decoration: none;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .step-chip:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
+  .step-chip.external { background: var(--orange-light); color: #b45309; }
+  .step-chip.external:hover { background: var(--orange); color: #fff; }
+  .step-arrow { color: var(--border); font-size: 0.75rem; flex-shrink: 0; }
+
+  /* ─── CONTAINER ─── */
+  .container { max-width: 700px; margin: 0 auto; padding: 1.25rem; }
+
+  /* ─── SECTION TITLES ─── */
+  .section-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin: 2rem 0 1rem;
+  }
+  .section-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .si-green { background: var(--green-light); }
+  .si-blue  { background: var(--blue-light); }
+  .section-header h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem; font-weight: 800; color: var(--text);
+  }
+  .section-header p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ─── INFO ALERT ─── */
+  .alert {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+  .alert-blue { background: var(--blue-light); color: #1e3a5f; border-left: 4px solid var(--primary); }
+  .alert-green { background: var(--green-light); color: #0c4a21; border-left: 4px solid var(--green); }
+  .alert-orange { background: var(--orange-light); color: #7c3d00; border-left: 4px solid var(--orange); }
+  .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+  /* ─── DISPANSER CARD ─── */
+  .disp-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+    border: 1px solid var(--border);
+  }
+  .disp-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+  .disp-card-top {
+    padding: 1rem 1.1rem 0.85rem;
+    display: flex; gap: 0.85rem; align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+  }
+  .disp-num {
+    width: 36px; height: 36px; border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 1rem; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .n1 { background: linear-gradient(135deg,#f093fb,#f5576c); }
+  .n2 { background: linear-gradient(135deg,#4facfe,#00f2fe); }
+  .n3 { background: linear-gradient(135deg,#43e97b,#38f9d7); }
+  .n4 { background: linear-gradient(135deg,#fa709a,#fee140); }
+  .disp-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem; line-height: 1.3; }
+  .disp-subtitle { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .disp-body { padding: 0.9rem 1.1rem; }
+  .info-item {
+    display: flex; gap: 0.6rem; align-items: flex-start;
+    margin-bottom: 0.55rem; font-size: 0.875rem;
+  }
+  .info-item:last-child { margin-bottom: 0; }
+  .info-item .emoji { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .info-item .label { font-size: 0.72rem; color: var(--muted); font-weight: 600; min-width: 55px; margin-top: 0.15rem; }
+  .info-item .value { color: var(--text); font-weight: 500; line-height: 1.4; }
+  .time-badge {
+    display: inline-block;
+    background: var(--green-light); color: var(--green);
+    border-radius: 6px; padding: 0.15rem 0.5rem;
+    font-size: 0.78rem; font-weight: 700;
+  }
+
+  .disp-actions {
+    padding: 0.75rem 1.1rem 1rem;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1rem; border-radius: var(--radius-sm);
+    font-size: 0.82rem; font-weight: 700;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all 0.2s; font-family: 'Rubik', sans-serif;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-call { background: var(--green-light); color: #065f46; }
+  .btn-call:hover { background: var(--green); color: #fff; }
+  .btn-map { background: var(--orange-light); color: #92400e; }
+  .btn-map:hover { background: var(--orange); color: #fff; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  /* ─── MAP EMBED ─── */
+  .map-embed {
+    margin: 0.25rem 1.1rem 0.85rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    height: 180px;
+  }
+  .map-embed iframe { width: 100%; height: 100%; display: block; border: 0; }
+
+  /* ─── POLYCLINIC STEPS ─── */
+  .poly-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .poly-step {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .poly-step:last-child { border-bottom: none; }
+  .poly-step:hover { background: var(--blue-light); }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--primary); color: #fff;
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-info { flex: 1; }
+  .step-info .step-name { font-weight: 700; font-size: 0.9rem; }
+  .step-info .step-loc {
+    font-size: 0.78rem; color: var(--muted);
+    margin-top: 0.2rem;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .step-tag {
+    background: var(--blue-light);
+    color: var(--primary);
+    border-radius: 6px; padding: 0.1rem 0.45rem;
+    font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0; margin-top: 0.15rem;
+  }
+  .step-tag.special { background: var(--orange-light); color: #92400e; }
+
+  /* ─── CONTACT CARD ─── */
+  .contact-card {
+    background: linear-gradient(145deg, #1a73e8, #0f9d58);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .contact-card .cc-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .contact-card h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 1.15rem; margin-bottom: 0.3rem;
+  }
+  .contact-card p { font-size: 0.85rem; opacity: 0.88; margin-bottom: 1.25rem; }
   .contact-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
   .cbtn {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.6rem 1.25rem; border-radius: 99px;
-    font-size: 0.85rem; font-weight: 700; text-decoration: none;
-    transition: transform 0.15s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.4rem; border-radius: 99px;
+    font-size: 0.9rem; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+    font-family: 'Rubik', sans-serif;
   }
-  .cbtn:hover { transform: scale(1.04); }
-  .cbtn-tel { background: #fff; color: #1a56db; }
+  .cbtn:active { transform: scale(0.97); }
+  .cbtn-tel { background: #fff; color: var(--primary); }
+  .cbtn-tel:hover { background: #e8f0fe; }
   .cbtn-tg  { background: #0088cc; color: #fff; }
+  .cbtn-tg:hover  { background: #0077b5; }
 
-  footer {
-    text-align: center; font-size: 0.75rem; color: #718096;
-    padding: 1.5rem 1rem 2rem;
+  /* ─── FAQ / TIPS ─── */
+  .tip-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
   }
+  .tip-item {
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .tip-item:last-child { border-bottom: none; }
+  .tip-q {
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 700; font-size: 0.9rem; gap: 0.75rem;
+  }
+  .tip-q span { flex: 1; }
+  .tip-toggle { color: var(--primary); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.25s; }
+  .tip-a { display: none; font-size: 0.83rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.6; }
+  .tip-item.open .tip-a { display: block; }
+  .tip-item.open .tip-toggle { transform: rotate(45deg); }
+
+  /* ─── DEVELOPER FOOTER ─── */
+  footer {
+    background: #111827;
+    color: #9ca3af;
+    padding: 2rem 1.25rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .footer-top {
+    background: #1f2937;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    max-width: 400px;
+    margin-left: auto; margin-right: auto;
+  }
+  .footer-top .dev-label {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
+    color: #6b7280; margin-bottom: 0.5rem;
+  }
+  .dev-name {
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 1.05rem; color: #f9fafb; margin-bottom: 0.75rem;
+  }
+  .dev-tg {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: #0088cc; color: #fff;
+    border-radius: 99px; padding: 0.5rem 1.1rem;
+    font-size: 0.82rem; font-weight: 700;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .dev-tg:hover { background: #0077b5; }
+  footer p { font-size: 0.75rem; color: #4b5563; margin-top: 0.75rem; }
+  .footer-divider { height: 1px; background: #374151; margin: 1.25rem 0; }
+
+  /* ─── MOBILE TWEAKS ─── */
+  @media (max-width: 480px) {
+    .hero { padding: 2rem 1rem 3rem; }
+    .hero h1 { font-size: 1.5rem; }
+    .disp-actions { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+    .contact-btns { flex-direction: column; align-items: center; }
+    .cbtn { width: 100%; max-width: 260px; justify-content: center; }
+    .steps-row { padding-bottom: 0.5rem; }
+    .map-embed { height: 160px; }
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* ─── BACK TO TOP ─── */
+  .back-top {
+    position: fixed; bottom: 1.25rem; right: 1.25rem;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; text-decoration: none;
+    box-shadow: 0 4px 14px rgba(26,115,232,0.4);
+    opacity: 0; pointer-events: none;
+    transition: all 0.3s; z-index: 99;
+  }
+  .back-top.show { opacity: 1; pointer-events: all; }
+  .back-top:hover { background: var(--primary-dark); transform: translateY(-2px); }
 </style>
 </head>
 <body>
 
-<header>
-  <div style="font-size:2rem; margin-bottom:0.5rem">🏥</div>
-  <h1>Nikoh tibbiy ko'rigi</h1>
-  <p>Mirobod tumani — Nikohlanuvchi shaxslar uchun eslatma</p>
-  <span class="badge">📋 Barcha manzillar va raqamlar</span>
+<!-- BACK TO TOP -->
+<a href="#" class="back-top" id="backTop" aria-label="Yuqoriga qaytish">↑</a>
+
+<!-- ─── HERO ─── -->
+<header class="hero" id="top">
+  <span class="hero-icon">🏥</span>
+  <h1>Nikoh Tibbiy Ko'rigi</h1>
+  <p>Mirobod tumani — nikohlanuvchi shaxslar uchun to'liq qo'llanma</p>
+  <div class="hero-steps">
+    <span class="hero-step">📋 4 ta Dispanser</span>
+    <span class="hero-step">🔬 8 ta Tekshiruv</span>
+    <span class="hero-step">🗺 Xaritalar bor</span>
+    <span class="hero-step">📞 Aloqa raqami</span>
+  </div>
 </header>
+
+<!-- ─── HOW TO USE ─── -->
+<div class="how-banner">
+  <p>📌 <strong>Qanday foydalanish:</strong> Avval <strong>4 ta dispanserga</strong> boring, so'ng <strong>poliklinikada</strong> tekshiruvlardan o'ting, va <strong>3-qavat 49-xona</strong>dan xulosa oling.</p>
+</div>
+
+<!-- ─── STICKY NAVIGATION ─── -->
+<nav class="progress-bar">
+  <h2>📍 Tez navigatsiya</h2>
+  <div class="steps-row">
+    <a href="#dispanserlar" class="step-chip external">🏨 Dispanserlar</a>
+    <span class="step-arrow">›</span>
+    <a href="#polyclinic" class="step-chip">🏥 Poliklinika</a>
+    <span class="step-arrow">›</span>
+    <a href="#xulosa" class="step-chip">📄 Xulosa olish</a>
+    <span class="step-arrow">›</span>
+    <a href="#contact" class="step-chip">📞 Bog'lanish</a>
+  </div>
+</nav>
 
 <div class="container">
 
-  <!-- ── DISPANSERLAR ── -->
-  <div class="section-title">🏨 Dispanserlar (tashqi)</div>
+  <!-- ─── DISPANSERLAR SECTION ─── -->
+  <div class="section-header fade-in" id="dispanserlar">
+    <div class="section-icon si-green">🏨</div>
+    <div>
+      <h2>1-QADAM: Dispanserlar</h2>
+      <p>Quyidagi 4 ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+    </div>
+  </div>
 
-  <!-- 1. Dermatovenerolog -->
-  <div class="card">
-    <div class="card-header">
-      <span class="icon">🔬</span>
+  <div class="alert alert-orange fade-in">
+    <span class="alert-icon">⏰</span>
+    <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
+  </div>
+
+  <!-- CARD 1: DERMATOVENEROLOG -->
+  <div class="disp-card fade-in">
+    <div class="disp-card-top">
+      <div class="disp-num n1">1</div>
       <div>
-        <div class="spec">Dermatovenerolog</div>
-        <div class="name">8-sonli Tumanlararo Teri-tanosil kasalliklar dispanseri</div>
+        <div class="disp-title">🔬 Dermatovenerolog</div>
+        <div class="disp-subtitle">8-sonli Tumanlararo Teri-tanosil kasalliklar dispanseri</div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="info-row">
-        <span class="lbl">📍 Manzil:</span>
-        <span class="val">Yashnobod tumani, Zoxidova ko'chasi, 8-uy (Jarqo'rg'on), Davr bekati</span>
+    <div class="disp-body">
+      <div class="info-item">
+        <span class="emoji">📍</span>
+        <span class="label">Manzil</span>
+        <span class="value">Yashnobod tumani, Zoxidov ko'chasi, 8-uy <br><em style="color:var(--muted);font-size:0.78rem;">(Jarqo'rg'on, Davr bekati)</em></span>
       </div>
-      <div class="info-row">
-        <span class="lbl">🕐 Vaqt:</span>
-        <span class="val">08:00 – 12:00</span>
+      <div class="info-item">
+        <span class="emoji">🕐</span>
+        <span class="label">Qabul</span>
+        <span class="value"><span class="time-badge">08:00 – 12:00</span></span>
       </div>
-      <div class="btn-row">
-        <a href="tel:+997712914780" class="btn btn-tel">📞 71-291-47-80</a>
-        <a href="tel:+997712913371" class="btn btn-tel">📞 71-291-33-71</a>
-        <a href="https://yandex.uz/maps/?pt=69.3116,41.3672&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <div class="info-item">
+        <span class="emoji">📞</span>
+        <span class="label">Telefon</span>
+        <span class="value">71-291-47-80 &nbsp;|&nbsp; 71-291-33-71</span>
       </div>
+    </div>
+    <div class="map-embed">
+      <iframe
+        src="https://yandex.uz/maps/?ll=69.3116,41.3672&z=15&l=map&pt=69.3116,41.3672,pm2rdl&mode=search"
+        loading="lazy" allowfullscreen title="Dermatovenerolog manzili"></iframe>
+    </div>
+    <div class="disp-actions">
+      <a href="tel:+998712914780" class="btn btn-call">📞 71-291-47-80</a>
+      <a href="tel:+998712913371" class="btn btn-call">📞 71-291-33-71</a>
+      <a href="https://yandex.uz/maps/?pt=69.3116,41.3672&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
     </div>
   </div>
 
-  <!-- 2. Ftiziator -->
-  <div class="card">
-    <div class="card-header">
-      <span class="icon">🫁</span>
+  <!-- CARD 2: FTIZIATOR -->
+  <div class="disp-card fade-in">
+    <div class="disp-card-top">
+      <div class="disp-num n2">2</div>
       <div>
-        <div class="spec">Ftiziator</div>
-        <div class="name">5-son Tumanlararo Ftiziateriya dispanseri</div>
+        <div class="disp-title">🫁 Ftiziator</div>
+        <div class="disp-subtitle">5-son Tumanlararo Ftiziateriya dispanseri</div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="info-row">
-        <span class="lbl">📍 Manzil:</span>
-        <span class="val">Mirobod tumani, 8-Mart ko'chasi, 59-uy</span>
+    <div class="disp-body">
+      <div class="info-item">
+        <span class="emoji">📍</span>
+        <span class="label">Manzil</span>
+        <span class="value">Mirobod tumani, 8-Mart ko'chasi, 59-uy</span>
       </div>
-      <div class="info-row">
-        <span class="lbl">🕐 Vaqt:</span>
-        <span class="val">08:00 – 16:00</span>
+      <div class="info-item">
+        <span class="emoji">🕐</span>
+        <span class="label">Qabul</span>
+        <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
       </div>
-      <div class="btn-row">
-        <a href="tel:+997712839881" class="btn btn-tel">📞 71-283-98-81</a>
-        <a href="https://yandex.uz/maps/?pt=69.2954,41.2809&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <div class="info-item">
+        <span class="emoji">📞</span>
+        <span class="label">Telefon</span>
+        <span class="value">71-283-98-81</span>
       </div>
+    </div>
+    <div class="map-embed">
+      <iframe
+        src="https://yandex.uz/maps/?ll=69.2954,41.2809&z=15&l=map&pt=69.2954,41.2809,pm2rdl&mode=search"
+        loading="lazy" allowfullscreen title="Ftiziator manzili"></iframe>
+    </div>
+    <div class="disp-actions">
+      <a href="tel:+998712839881" class="btn btn-call">📞 71-283-98-81</a>
+      <a href="https://yandex.uz/maps/?pt=69.2954,41.2809&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
     </div>
   </div>
 
-  <!-- 3. Psixiatr -->
-  <div class="card">
-    <div class="card-header">
-      <span class="icon">🧠</span>
+  <!-- CARD 3: PSIXIATR -->
+  <div class="disp-card fade-in">
+    <div class="disp-card-top">
+      <div class="disp-num n3">3</div>
       <div>
-        <div class="spec">Psixiatr</div>
-        <div class="name">2-son Shahar Ruhiy-asab kasalliklari dispanseri</div>
+        <div class="disp-title">🧠 Psixiatr</div>
+        <div class="disp-subtitle">2-son Shahar Ruhiy-asab kasalliklari dispanseri</div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="info-row">
-        <span class="lbl">📍 Manzil:</span>
-        <span class="val">Yashnobod tumani, Qorasuv ko'chasi, 25-uy (Lisunova, Dvorets Aviastroiteley)</span>
+    <div class="disp-body">
+      <div class="info-item">
+        <span class="emoji">📍</span>
+        <span class="label">Manzil</span>
+        <span class="value">Yashnobod tumani, Qorasuv ko'chasi, 25-uy <br><em style="color:var(--muted);font-size:0.78rem;">(Lisunova, Dvorets Aviastroiteley)</em></span>
       </div>
-      <div class="info-row">
-        <span class="lbl">🕐 Vaqt:</span>
-        <span class="val">08:00 – 16:00</span>
+      <div class="info-item">
+        <span class="emoji">🕐</span>
+        <span class="label">Qabul</span>
+        <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
       </div>
-      <div class="btn-row">
-        <a href="tel:+997712947465" class="btn btn-tel">📞 71-294-74-65</a>
-        <a href="https://yandex.uz/maps/?pt=69.3400,41.2939&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
+      <div class="info-item">
+        <span class="emoji">📞</span>
+        <span class="label">Telefon</span>
+        <span class="value">71-294-74-65</span>
       </div>
+    </div>
+    <div class="map-embed">
+      <iframe
+        src="https://yandex.uz/maps/?ll=69.3400,41.2939&z=15&l=map&pt=69.3400,41.2939,pm2rdl&mode=search"
+        loading="lazy" allowfullscreen title="Psixiatr manzili"></iframe>
+    </div>
+    <div class="disp-actions">
+      <a href="tel:+998712947465" class="btn btn-call">📞 71-294-74-65</a>
+      <a href="https://yandex.uz/maps/?pt=69.3400,41.2939&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
     </div>
   </div>
 
-  <!-- 4. Narkolog -->
-  <div class="card">
-    <div class="card-header">
-      <span class="icon">💊</span>
+  <!-- CARD 4: NARKOLOG -->
+  <div class="disp-card fade-in">
+    <div class="disp-card-top">
+      <div class="disp-num n4">4</div>
       <div>
-        <div class="spec">Narkolog</div>
-        <div class="name">Narkologiya dispanseri RIRSITMNB — Toshkent shahar filiali</div>
+        <div class="disp-title">💊 Narkolog</div>
+        <div class="disp-subtitle">Narkologiya dispanseri — Toshkent shahar filiali (RIRSITMNB)</div>
       </div>
     </div>
-    <div class="card-body">
-      <div class="info-row">
-        <span class="lbl">📍 Manzil:</span>
-        <span class="val">Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy (Nuroniylar sanatoriyasi)</span>
+    <div class="disp-body">
+      <div class="info-item">
+        <span class="emoji">📍</span>
+        <span class="label">Manzil</span>
+        <span class="value">Yunusobod tumani, Bobodehqon MFY, 19-mavze, 51-uy <br><em style="color:var(--muted);font-size:0.78rem;">(Nuroniylar sanatoriyasi yaqinida)</em></span>
       </div>
-      <div class="info-row">
-        <span class="lbl">🕐 Vaqt:</span>
-        <span class="val">08:00 – 15:00</span>
+      <div class="info-item">
+        <span class="emoji">🕐</span>
+        <span class="label">Qabul</span>
+        <span class="value"><span class="time-badge">08:00 – 15:00</span></span>
       </div>
-      <div class="btn-row">
-        <a href="https://yandex.uz/maps/?pt=69.3166,41.3804&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
-      </div>
+    </div>
+    <div class="map-embed">
+      <iframe
+        src="https://yandex.uz/maps/?ll=69.3166,41.3804&z=15&l=map&pt=69.3166,41.3804,pm2rdl&mode=search"
+        loading="lazy" allowfullscreen title="Narkolog manzili"></iframe>
+    </div>
+    <div class="disp-actions">
+      <a href="https://yandex.uz/maps/?pt=69.3166,41.3804&z=17&l=map" target="_blank" class="btn btn-map">🗺 Yandex Maps</a>
     </div>
   </div>
 
-  <!-- NOTE after dispensaries -->
-  <div class="note">
-    ℹ️ <span><strong>Eslatma:</strong> Barcha tekshiruvlardan o'tgach, yakuniy tibbiy xulosa uchun — <strong>Mirobod TTB MKP, 3-qavat, 49-xona</strong>ga murojaat qiling.</span>
+  <!-- ─── POLIKLINIKA SECTION ─── -->
+  <div class="section-header fade-in" id="polyclinic">
+    <div class="section-icon si-blue">🏥</div>
+    <div>
+      <h2>2-QADAM: Poliklinika Tekshiruvlari</h2>
+      <p>Dispanserlardan keyin, o'z poliklinikangizda quyidagi tahlillardan o'ting</p>
+    </div>
   </div>
 
-  <!-- ── POLIKLINIKA ── -->
-  <div class="section-title">🏥 Poliklinika bo'yicha (ichki)</div>
-
-  <div class="card">
-    <ul class="step-list">
-      <li>
-        <span class="step-num">1</span>
-        <div class="step-text">
-          <strong>OIV tekshiruvi</strong> (117-kod)
-          <div class="room">1-qavat, 14a-xona — Dushanba, Chorshanba, Juma: 08:00–09:00. Pasport + propiska nusxasi kerak.</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">2</span>
-        <div class="step-text">
-          <strong>Umumiy qon va qondagi qand</strong>
-          <div class="room">2-qavat, 35-xona</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">3</span>
-        <div class="step-text">
-          <strong>EKG</strong>
-          <div class="room">2-qavat, 32-xona</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">4</span>
-        <div class="step-text">
-          <strong>UTT tekshiruvi</strong>
-          <div class="room">1-qavat, 14-xona</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">5</span>
-        <div class="step-text">
-          <strong>Ginekolog</strong>
-          <div class="room">2-qavat, 17-xona</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">6</span>
-        <div class="step-text">
-          <strong>Urolog</strong>
-          <div class="room">2-qavat, 30-xona</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">7</span>
-        <div class="step-text">
-          <strong>Endokrinolog</strong>
-          <div class="room">2-qavat, 24-xona</div>
-        </div>
-      </li>
-      <li>
-        <span class="step-num">8</span>
-        <div class="step-text">
-          <strong>Revmatolog</strong>
-          <div class="room">2-qavat, 29-xona</div>
-        </div>
-      </li>
-    </ul>
+  <div class="alert alert-blue fade-in">
+    <span class="alert-icon">ℹ️</span>
+    <span><strong>Pasport + propiska nusxasini</strong> olib keling. OIV tekshiruvi uchun faqat <strong>Dushanba, Chorshanba, Juma</strong> kunlari, <strong>08:00–09:00</strong> orasida boring.</span>
   </div>
 
-  <div class="note">
-    ℹ️ <span><strong>Eslatma:</strong> Barcha poliklinika tekshiruvlaridan so'ng xulosa uchun — <strong>3-qavat, 49-xona</strong>.</span>
+  <div class="poly-card fade-in">
+    <div class="poly-step">
+      <div class="step-circle">1</div>
+      <div class="step-info">
+        <div class="step-name">OIV tekshiruvi (117-kod)</div>
+        <div class="step-loc">🚪 1-qavat, 14a-xona</div>
+      </div>
+      <div class="step-tag special">Du/Chor/Ju 08–09</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">2</div>
+      <div class="step-info">
+        <div class="step-name">Umumiy qon va qondagi qand</div>
+        <div class="step-loc">🚪 2-qavat, 35-xona</div>
+      </div>
+      <div class="step-tag">Laboratoriya</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">3</div>
+      <div class="step-info">
+        <div class="step-name">EKG (elektrokardiogramma)</div>
+        <div class="step-loc">🚪 2-qavat, 32-xona</div>
+      </div>
+      <div class="step-tag">Yurak</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">4</div>
+      <div class="step-info">
+        <div class="step-name">UTT tekshiruvi (ultratovush)</div>
+        <div class="step-loc">🚪 1-qavat, 14-xona</div>
+      </div>
+      <div class="step-tag">Ultratovush</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">5</div>
+      <div class="step-info">
+        <div class="step-name">Ginekolog</div>
+        <div class="step-loc">🚪 2-qavat, 17-xona</div>
+      </div>
+      <div class="step-tag">Ayollar</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">6</div>
+      <div class="step-info">
+        <div class="step-name">Urolog</div>
+        <div class="step-loc">🚪 2-qavat, 30-xona</div>
+      </div>
+      <div class="step-tag">Erkaklar</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">7</div>
+      <div class="step-info">
+        <div class="step-name">Endokrinolog</div>
+        <div class="step-loc">🚪 2-qavat, 24-xona</div>
+      </div>
+      <div class="step-tag">Gormon</div>
+    </div>
+    <div class="poly-step">
+      <div class="step-circle">8</div>
+      <div class="step-info">
+        <div class="step-name">Revmatolog</div>
+        <div class="step-loc">🚪 2-qavat, 29-xona</div>
+      </div>
+      <div class="step-tag">Bo'g'im</div>
+    </div>
   </div>
 
-  <!-- ── CONTACT ── -->
-  <div class="contact-box">
-    <h3>📞 Masul shaxs bilan bog'laning</h3>
-    <p>Savollaringiz bo'lsa, quyidagi raqam yoki Telegram orqali murojaat qiling</p>
+  <!-- ─── XULOSA SECTION ─── -->
+  <div class="section-header fade-in" id="xulosa">
+    <div class="section-icon si-green">📄</div>
+    <div>
+      <h2>3-QADAM: Xulosa Olish</h2>
+      <p>Barcha tekshiruvlar tugagach shu xonaga boring</p>
+    </div>
+  </div>
+
+  <div class="alert alert-green fade-in">
+    <span class="alert-icon">✅</span>
+    <div>
+      <strong>Mirobod TTB MKP — 3-qavat, 49-xona</strong><br>
+      <span style="font-size:0.82rem;">Barcha dispanser va poliklinika ma'lumotnomalarini olib keling. Shu yerda yakuniy tibbiy xulosa beriladi.</span>
+    </div>
+  </div>
+
+  <!-- ─── FAQ ─── -->
+  <div class="section-header fade-in">
+    <div class="section-icon si-blue">❓</div>
+    <div>
+      <h2>Ko'p So'raladigan Savollar</h2>
+    </div>
+  </div>
+
+  <div class="tip-card fade-in">
+    <div class="tip-item" onclick="this.classList.toggle('open')">
+      <div class="tip-q"><span>📋 Qanday hujjatlar kerak?</span><span class="tip-toggle">+</span></div>
+      <div class="tip-a">Pasport asl nusxasi va fotokopiyasi, propiska (ro'yxatdan o'tish) fotokopiyasi. Ayrim joylar qo'shimcha hujjat so'rashi mumkin.</div>
+    </div>
+    <div class="tip-item" onclick="this.classList.toggle('open')">
+      <div class="tip-q"><span>⏱️ Hammasi qancha vaqt oladi?</span><span class="tip-toggle">+</span></div>
+      <div class="tip-a">Odatda 2–4 kun. Dispanserlarga alohida kunlarda borish qulay. Poliklinika tekshiruvlarini bir kunda o'tish mumkin, lekin OIV uchun faqat Du/Chor/Juma kunlari boring.</div>
+    </div>
+    <div class="tip-item" onclick="this.classList.toggle('open')">
+      <div class="tip-q"><span>💰 Tekshiruvlar pulli yoki beplatmi?</span><span class="tip-toggle">+</span></div>
+      <div class="tip-a">Asosiy tibbiy ko'rik bepul. Lekin ba'zi dispanserlarda hujjat rasmiylashtiruvi uchun to'lov bo'lishi mumkin. Aniq ma'lumot uchun masul shaxs bilan bog'laning.</div>
+    </div>
+    <div class="tip-item" onclick="this.classList.toggle('open')">
+      <div class="tip-q"><span>🕐 Qaysi dispanserlarga avval borish kerak?</span><span class="tip-toggle">+</span></div>
+      <div class="tip-a">Ketma-ketlik muhim emas. Lekin <strong>Dermatovenerolog</strong>ga 08:00–12:00 orasida boring (qabul vaqti qisqa). Narkolog 08:00–15:00 gacha.</div>
+    </div>
+    <div class="tip-item" onclick="this.classList.toggle('open')">
+      <div class="tip-q"><span>📞 Savollarim bo'lsa kimga murojaat qilaman?</span><span class="tip-toggle">+</span></div>
+      <div class="tip-a">Quyidagi "Bog'lanish" bo'limidagi telefon yoki Telegram orqali masul shaxs bilan bog'laning. Javob vaqti — ish kuni soatlari ichida.</div>
+    </div>
+  </div>
+
+  <!-- ─── CONTACT CARD ─── -->
+  <div class="section-header fade-in" id="contact">
+    <div class="section-icon si-blue">📞</div>
+    <div>
+      <h2>Masul Shaxs</h2>
+      <p>Savol yoki muammo bo'lsa, darhol murojaat qiling</p>
+    </div>
+  </div>
+
+  <div class="contact-card fade-in">
+    <div class="cc-icon">👨‍⚕️</div>
+    <h3>Mirobod TTB — Masul Shaxs</h3>
+    <p>Nikoh tibbiy ko'rigi bo'yicha barcha savollaringizga javob beramiz</p>
     <div class="contact-btns">
-      <!-- 🔴 REPLACE +998901234567 with real phone number -->
       <a href="tel:+998977528989" class="cbtn cbtn-tel">📞 +998 97 752-89-89</a>
-      <!-- 🔴 REPLACE username with real Telegram username -->
       <a href="https://t.me/MN_889G" target="_blank" class="cbtn cbtn-tg">✈️ @MN_889G</a>
     </div>
   </div>
 
-</div>
+</div><!-- /container -->
 
+<!-- ─── FOOTER / DEVELOPER ─── -->
 <footer>
-  Mirobod tumani Tibbiyot birlashmasi · Nikoh tibbiy ko'rigi xizmati
+  <div class="container" style="padding:0;">
+    <div class="footer-top">
+      <div class="dev-label">🛠️ Sayt ishlab chiquvchisi</div>
+      <div class="dev-name">Xamidullo Xudoyberdiyev</div>
+      <a href="https://t.me/xamidullo_xudoyberdiyev" target="_blank" class="dev-tg">
+        ✈️ @xamidullo_xudoyberdiyev
+      </a>
+    </div>
+    <div class="footer-divider"></div>
+    <p>© 2025 Mirobod tumani Tibbiyot birlashmasi</p>
+    <p style="margin-top:0.4rem;">Nikoh tibbiy ko'rigi xizmati — Barcha huquqlar himoyalangan</p>
+  </div>
 </footer>
 
+<script>
+  // ─── Fade-in on scroll ───
+  const faders = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  faders.forEach(el => observer.observe(el));
+
+  // ─── Back to top button ───
+  const backTop = document.getElementById('backTop');
+  window.addEventListener('scroll', () => {
+    backTop.classList.toggle('show', window.scrollY > 400);
+  });
+</script>
 </body>
 </html>
