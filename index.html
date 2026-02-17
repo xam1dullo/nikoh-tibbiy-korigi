@@ -112,6 +112,22 @@
   }
   .section-header p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
 
+  #regionMap {
+    height: 350px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  #districtMap {
+    height: 300px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
   /* ─── MAP INFO & LEGEND ─── */
   .info {
     padding: 6px 8px;
@@ -131,30 +147,6 @@
     font-size: 1.3em;
     font-weight: 800;
     color: var(--primary);
-  }
-
-  .legend {
-    line-height: 20px;
-    color: #555;
-    padding: 8px 12px !important;
-  }
-  .legend h4 {
-    font-size: 12px;
-    margin: 0 0 6px;
-  }
-  .legend i {
-    width: 20px;
-    height: 14px;
-    float: left;
-    margin-right: 8px;
-    opacity: 0.8;
-    border-radius: 3px;
-  }
-  .legend .legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 3px;
-    font-size: 12px;
   }
 
   .map-back-btn {
@@ -177,13 +169,19 @@
   }
 
   /* ─── MAP STYLES ─── */
+  #mapContainer {
+    margin: 0 -1.25rem;
+    max-width: none;
+  }
   #map {
-    height: 500px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 1.5rem;
+    height: 600px;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 0;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: none;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
 
   .loading {
@@ -629,13 +627,15 @@
   </div>
 </div>
 
+<!-- ─── FULL WIDTH MAP ─── -->
+<div id="mapContainer">
+  <div id="map"></div>
+</div>
+
 <div class="container">
 
   <!-- ─── MAIN VIEW ─── -->
   <div id="mainView" class="view active">
-    <div id="mapContainer">
-      <div id="map"></div>
-    </div>
 
     <div class="regions-grid" id="regionsGrid"></div>
   </div>
@@ -654,6 +654,10 @@
         <h2 id="regionTitle"></h2>
         <p id="regionSubtitle">Quyidagi tumanlardan birini tanlang</p>
       </div>
+    </div>
+
+    <div id="regionMapContainer" style="margin-bottom:1.25rem;">
+      <div id="regionMap"></div>
     </div>
 
     <div class="districts-grid" id="districtsGrid"></div>
@@ -675,6 +679,10 @@
         <h2 id="districtTitle"></h2>
         <p>Nikoh tibbiy ko'rigi uchun to'liq ma'lumot</p>
       </div>
+    </div>
+
+    <div id="districtMapContainer" style="margin-bottom:1.25rem;">
+      <div id="districtMap"></div>
     </div>
 
     <div id="districtContent"></div>
@@ -711,7 +719,6 @@
 <script type="text/javascript" src="data/surxondaryo.js"></script>
 <script type="text/javascript" src="data/toshkent.js"></script>
 <script type="text/javascript" src="data/xorazm.js"></script>
-<script type="text/javascript" src="data.js"></script>
 
 <script>
 // ─── APP DATA (hardcoded REGIONS — endi GeoJSON dan olinadi) ───
@@ -1065,51 +1072,31 @@ function initializeMap() {
 
   map = L.map('map', {
     center: [41.3, 64.5],
-    zoom: 6,
-    zoomControl: true
+    zoom: 7,
+    zoomControl: true,
+    attributionControl: false
   });
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    maxZoom: 19
   }).addTo(map);
 
   showRegionsOnMap();
 }
 
-// ─── DATA-DRIVEN COLORS ───
-function getColor(d) {
-  return d > 1000 ? '#800026'
-       : d > 500  ? '#BD0026'
-       : d > 200  ? '#E31A1C'
-       : d > 100  ? '#FC4E2A'
-       : d > 50   ? '#FD8D3C'
-       : d > 20   ? '#FEB24C'
-       : d > 10   ? '#FED976'
-       : d > 0    ? '#FFEDA0'
-       :            '#E0E0E0';
+// ─── MAP COLORS ───
+const REGION_COLORS = [
+  '#4ECDC4', '#45B7D1', '#FF6B6B', '#96CEB4', '#FFEAA7',
+  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+  '#F8C471', '#82E0AA', '#F1948A', '#AED6F1'
+];
+
+function getRegionColor(index) {
+  return REGION_COLORS[index % REGION_COLORS.length];
 }
 
-function getFirstWordLowercase(str) {
-  let filter = str.replace(/[-',`ʻ]/g, '');
-  return filter.split(' ')[0].toLowerCase();
-}
-
-function getRegionValue(name) {
-  if (typeof data === 'undefined') return 0;
-  const regionData = data.regions.regionsData.find(r => r.name === name);
-  return regionData ? regionData.value : 0;
-}
-
-function getDistrictValue(regionName, districtName) {
-  if (typeof data === 'undefined' || !data[regionName]) return 0;
-  const districtData = data[regionName].subData.find(d => d.name === districtName);
-  return districtData ? districtData.value : 0;
-}
-
-// ─── MAP INFO CONTROL ───
+// ─── MAP CONTROLS ───
 let infoControl = null;
-let legendControl = null;
 let backControl = null;
 let currentMapRegionName = null;
 
@@ -1122,7 +1109,6 @@ function showRegionsOnMap() {
 
   if (geojsonLayer) map.removeLayer(geojsonLayer);
   if (infoControl) map.removeControl(infoControl);
-  if (legendControl) map.removeControl(legendControl);
   if (backControl) map.removeControl(backControl);
 
   mapLevel = 'regions';
@@ -1135,46 +1121,28 @@ function showRegionsOnMap() {
     this.update();
     return this._div;
   };
-  infoControl.update = function(props) {
-    if (props) {
-      const name = getFirstWordLowercase(props.name);
-      const value = getRegionValue(name);
-      this._div.innerHTML = '<h4>O\'zbekiston viloyatlari</h4>' +
-        '<b>' + props.name + '</b><br/>' +
-        '<span class="info-value">' + value + '</span> ta ma\'lumot';
+  infoControl.update = function(name, districtCount) {
+    if (name) {
+      this._div.innerHTML = '<h4>🇺🇿 O\'zbekiston</h4>' +
+        '<b>' + name + '</b>' +
+        (districtCount ? '<br/><span style="color:var(--muted);font-size:12px;">' + districtCount + ' ta tuman</span>' : '');
     } else {
-      this._div.innerHTML = '<h4>O\'zbekiston viloyatlari</h4>Viloyat ustiga boring';
+      this._div.innerHTML = '<h4>🇺🇿 O\'zbekiston</h4><span style="color:#999;">Viloyatni tanlang</span>';
     }
   };
   infoControl.addTo(map);
 
-  // Legend
-  legendControl = L.control({ position: 'bottomright' });
-  legendControl.onAdd = function() {
-    const div = L.DomUtil.create('div', 'info legend');
-    const grades = [0, 10, 20, 50, 100, 200, 500, 1000];
-    div.innerHTML = '<h4>📊 Ma\'lumot miqdori</h4>';
-    for (let i = 0; i < grades.length; i++) {
-      div.innerHTML +=
-        '<div class="legend-item"><i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+') + '</div>';
-    }
-    return div;
-  };
-  legendControl.addTo(map);
+  let colorIndex = 0;
 
-  // GeoJSON layer with data coloring
   geojsonLayer = L.geoJSON(GEOJSON_PATHS.regions, {
     style: function(feature) {
-      const name = getFirstWordLowercase(feature.properties.name);
-      const value = getRegionValue(name);
       return {
-        fillColor: getColor(value),
+        fillColor: getRegionColor(colorIndex++),
         weight: 2,
         opacity: 1,
         color: '#fff',
         dashArray: '3',
-        fillOpacity: 0.75
+        fillOpacity: 0.7
       };
     },
     onEachFeature: function(feature, layer) {
@@ -1182,18 +1150,18 @@ function showRegionsOnMap() {
       const regionKey = findRegionKeyFromGeoJSON(name);
       const regionData = regionKey ? REGIONS[regionKey] : null;
       const displayName = regionData ? regionData.name : feature.properties.name;
-      const nameKey = getFirstWordLowercase(feature.properties.name);
-      const value = getRegionValue(nameKey);
+      const districtCount = regionData ? regionData.districts.length : 0;
 
-      // Permanent tooltip with value
-      if (value > 0) {
-        layer.bindTooltip(String(value), {
-          permanent: true,
-          direction: 'center',
-          className: 'info',
-          opacity: 0.85
-        });
-      }
+      // Popup with region name
+      layer.bindPopup(
+        '<div style="text-align:center;min-width:140px;">' +
+        '<div style="font-size:1.5rem;margin-bottom:4px;">📍</div>' +
+        '<div style="font-weight:800;font-size:1rem;margin-bottom:4px;">' + displayName + '</div>' +
+        '<div style="color:#888;font-size:0.82rem;">' + districtCount + ' ta tuman</div>' +
+        (regionKey ? '<div style="margin-top:8px;"><span style="background:#1a73e8;color:#fff;padding:4px 14px;border-radius:99px;font-size:0.78rem;font-weight:700;cursor:pointer;" onclick="showRegionView(\'' + regionKey + '\');">Tanlash →</span></div>' : '') +
+        '</div>',
+        { closeButton: true, className: 'region-popup' }
+      );
 
       layer.on({
         mouseover: function(e) {
@@ -1201,10 +1169,10 @@ function showRegionsOnMap() {
             weight: 4,
             color: '#333',
             dashArray: '',
-            fillOpacity: 0.9
+            fillOpacity: 0.85
           });
           this.bringToFront();
-          infoControl.update(feature.properties);
+          infoControl.update(displayName, districtCount);
         },
         mouseout: function(e) {
           geojsonLayer.resetStyle(this);
@@ -1234,11 +1202,11 @@ function showDistrictsOnMap(regionKey) {
 
   if (geojsonLayer) map.removeLayer(geojsonLayer);
   if (infoControl) map.removeControl(infoControl);
-  if (legendControl) map.removeControl(legendControl);
   if (backControl) map.removeControl(backControl);
 
   mapLevel = regionKey;
   currentMapRegionName = geoKey;
+  const regionDisplayName = REGIONS[regionKey] ? REGIONS[regionKey].name : geoKey;
 
   // Info control for districts
   infoControl = L.control({ position: 'topright' });
@@ -1247,34 +1215,15 @@ function showDistrictsOnMap(regionKey) {
     this.update();
     return this._div;
   };
-  infoControl.update = function(props) {
-    const regionDisplayName = REGIONS[regionKey] ? REGIONS[regionKey].name : geoKey;
-    if (props) {
-      const name = getFirstWordLowercase(props.name);
-      const value = getDistrictValue(geoKey, name);
-      this._div.innerHTML = '<h4>' + regionDisplayName + '</h4>' +
-        '<b>' + props.name + '</b><br/>' +
-        '<span class="info-value">' + value + '</span> ta ma\'lumot';
+  infoControl.update = function(name) {
+    if (name) {
+      this._div.innerHTML = '<h4>📍 ' + regionDisplayName + '</h4>' +
+        '<b>' + name + '</b>';
     } else {
-      this._div.innerHTML = '<h4>' + regionDisplayName + '</h4>Tuman ustiga boring';
+      this._div.innerHTML = '<h4>📍 ' + regionDisplayName + '</h4><span style="color:#999;">Tumanni tanlang</span>';
     }
   };
   infoControl.addTo(map);
-
-  // Legend
-  legendControl = L.control({ position: 'bottomright' });
-  legendControl.onAdd = function() {
-    const div = L.DomUtil.create('div', 'info legend');
-    const grades = [0, 10, 20, 50, 100, 200, 500, 1000];
-    div.innerHTML = '<h4>📊 Ma\'lumot miqdori</h4>';
-    for (let i = 0; i < grades.length; i++) {
-      div.innerHTML +=
-        '<div class="legend-item"><i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-        grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+') + '</div>';
-    }
-    return div;
-  };
-  legendControl.addTo(map);
 
   // Back button
   backControl = L.control({ position: 'topleft' });
@@ -1290,34 +1239,33 @@ function showDistrictsOnMap(regionKey) {
   };
   backControl.addTo(map);
 
-  // GeoJSON layer with data coloring
+  let colorIndex = 0;
+
   geojsonLayer = L.geoJSON(districtGeoJSON, {
     style: function(feature) {
-      const name = getFirstWordLowercase(feature.properties.name);
-      const value = getDistrictValue(geoKey, name);
       return {
-        fillColor: getColor(value),
+        fillColor: getRegionColor(colorIndex++),
         weight: 2,
         opacity: 1,
         color: '#fff',
         dashArray: '3',
-        fillOpacity: 0.75
+        fillOpacity: 0.7
       };
     },
     onEachFeature: function(feature, layer) {
       const districtName = feature.properties.name || '';
-      const nameKey = getFirstWordLowercase(districtName);
-      const value = getDistrictValue(geoKey, nameKey);
+      const districtCode = findDistrictCode(regionKey, districtName);
 
-      // Permanent tooltip with value
-      if (value > 0) {
-        layer.bindTooltip(String(value), {
-          permanent: true,
-          direction: 'center',
-          className: 'info',
-          opacity: 0.85
-        });
-      }
+      // Popup with district name and select button
+      layer.bindPopup(
+        '<div style="text-align:center;min-width:140px;">' +
+        '<div style="font-size:1.5rem;margin-bottom:4px;">🏘</div>' +
+        '<div style="font-weight:800;font-size:1rem;margin-bottom:4px;">' + districtName + '</div>' +
+        '<div style="color:#888;font-size:0.82rem;margin-bottom:8px;">' + regionDisplayName + '</div>' +
+        (districtCode ? '<div><span style="background:#0f9d58;color:#fff;padding:5px 16px;border-radius:99px;font-size:0.8rem;font-weight:700;cursor:pointer;" onclick="showDistrictView(\'' + regionKey + '\', \'' + districtCode + '\');">Ko\'rish →</span></div>' : '') +
+        '</div>',
+        { closeButton: true, className: 'district-popup' }
+      );
 
       layer.on({
         mouseover: function(e) {
@@ -1325,27 +1273,24 @@ function showDistrictsOnMap(regionKey) {
             weight: 4,
             color: '#1a73e8',
             dashArray: '',
-            fillOpacity: 0.9
+            fillOpacity: 0.85
           });
           this.bringToFront();
-          infoControl.update(feature.properties);
+          infoControl.update(districtName);
         },
         mouseout: function(e) {
           geojsonLayer.resetStyle(this);
           infoControl.update();
         },
         click: function(e) {
-          const districtCode = findDistrictCode(regionKey, districtName);
-          if (districtCode) {
-            showDistrictView(regionKey, districtCode);
-          }
+          // popup opens automatically
         }
       });
     }
   });
 
   geojsonLayer.addTo(map);
-  map.fitBounds(geojsonLayer.getBounds());
+  map.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20], maxZoom: 11 });
 }
 
 // ─── HELPER: find region key from GeoJSON feature name ───
@@ -1547,6 +1492,9 @@ function showMainView() {
   window.location.hash = '';
 }
 
+let regionMap = null;
+let regionMapLayer = null;
+
 function showRegionView(regionKey) {
   const region = REGIONS[regionKey];
   if (!region) return;
@@ -1567,14 +1515,94 @@ function showRegionView(regionKey) {
     </div>
   `).join('');
 
-  // Zoom map to districts
-  if (mapLevel !== regionKey) {
-    showDistrictsOnMap(regionKey);
-  }
+  // Initialize region mini map
+  initRegionMap(regionKey);
 
   // Update URL
   window.location.hash = `region=${regionKey}`;
 }
+
+function initRegionMap(regionKey) {
+  if (regionMap) {
+    regionMap.remove();
+    regionMap = null;
+  }
+
+  const geoKey = REGION_GEOJSON_MAP[regionKey];
+  const districtGeoJSON = geoKey ? GEOJSON_PATHS[geoKey] : null;
+
+  if (!districtGeoJSON) {
+    document.getElementById('regionMapContainer').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('regionMapContainer').style.display = 'block';
+
+  regionMap = L.map('regionMap', {
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: false
+  });
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(regionMap);
+
+  let colorIndex = 0;
+
+  regionMapLayer = L.geoJSON(districtGeoJSON, {
+    style: function(feature) {
+      return {
+        fillColor: getRegionColor(colorIndex++),
+        weight: 2,
+        opacity: 1,
+        color: '#fff',
+        dashArray: '3',
+        fillOpacity: 0.7
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      const districtName = feature.properties.name || '';
+      const districtCode = findDistrictCode(regionKey, districtName);
+
+      layer.bindTooltip(districtName, {
+        permanent: false,
+        direction: 'center',
+        className: 'info'
+      });
+
+      layer.bindPopup(
+        '<div style="text-align:center;min-width:130px;">' +
+        '<div style="font-size:1.3rem;margin-bottom:4px;">🏘</div>' +
+        '<div style="font-weight:800;font-size:0.95rem;margin-bottom:6px;">' + districtName + '</div>' +
+        (districtCode ? '<div><span style="background:#0f9d58;color:#fff;padding:4px 14px;border-radius:99px;font-size:0.78rem;font-weight:700;cursor:pointer;" onclick="showDistrictView(\'' + regionKey + '\', \'' + districtCode + '\');">Ko\'rish →</span></div>' : '') +
+        '</div>',
+        { closeButton: true }
+      );
+
+      layer.on({
+        mouseover: function(e) {
+          this.setStyle({
+            weight: 4,
+            color: '#1a73e8',
+            dashArray: '',
+            fillOpacity: 0.85
+          });
+          this.bringToFront();
+        },
+        mouseout: function(e) {
+          regionMapLayer.resetStyle(this);
+        }
+      });
+    }
+  });
+
+  regionMapLayer.addTo(regionMap);
+  regionMap.fitBounds(regionMapLayer.getBounds(), { padding: [20, 20], maxZoom: 11 });
+}
+
+let districtMap = null;
+let districtMapLayer = null;
 
 function showDistrictView(regionKey, districtCode) {
   const region = REGIONS[regionKey];
@@ -1592,11 +1620,91 @@ function showDistrictView(regionKey, districtCode) {
   document.getElementById('districtBreadcrumb').textContent = district.name;
   document.getElementById('districtTitle').textContent = district.name;
 
+  // Initialize district mini map
+  initDistrictMap(regionKey, districtCode, district.name);
+
   // Render district content
   renderDistrictContent(regionKey, districtCode);
 
   // Update URL
   window.location.hash = `region=${regionKey}&district=${districtCode}`;
+}
+
+function initDistrictMap(regionKey, districtCode, districtName) {
+  // Destroy previous map
+  if (districtMap) {
+    districtMap.remove();
+    districtMap = null;
+  }
+
+  const geoKey = REGION_GEOJSON_MAP[regionKey];
+  const districtGeoJSON = geoKey ? GEOJSON_PATHS[geoKey] : null;
+
+  if (!districtGeoJSON) {
+    document.getElementById('districtMapContainer').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('districtMapContainer').style.display = 'block';
+
+  districtMap = L.map('districtMap', {
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: false
+  });
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(districtMap);
+
+  let selectedLayer = null;
+  let colorIndex = 0;
+
+  // Add all districts, highlight the selected one
+  districtMapLayer = L.geoJSON(districtGeoJSON, {
+    style: function(feature) {
+      const fName = (feature.properties.name || '').toLowerCase();
+      const fCode = findDistrictCode(regionKey, feature.properties.name || '');
+      const isSelected = fCode === districtCode;
+      return {
+        fillColor: isSelected ? '#1a73e8' : getRegionColor(colorIndex++),
+        weight: isSelected ? 3 : 1.5,
+        opacity: 1,
+        color: isSelected ? '#0d47a1' : '#fff',
+        dashArray: isSelected ? '' : '3',
+        fillOpacity: isSelected ? 0.8 : 0.35
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      const fCode = findDistrictCode(regionKey, feature.properties.name || '');
+      const isSelected = fCode === districtCode;
+
+      if (isSelected) {
+        selectedLayer = layer;
+        layer.bindTooltip('<b>' + districtName + '</b>', {
+          permanent: true,
+          direction: 'center',
+          className: 'info'
+        });
+      }
+
+      // Click other districts to navigate
+      layer.on('click', function() {
+        if (fCode && fCode !== districtCode) {
+          showDistrictView(regionKey, fCode);
+        }
+      });
+    }
+  });
+
+  districtMapLayer.addTo(districtMap);
+
+  // Zoom to selected district
+  if (selectedLayer) {
+    districtMap.fitBounds(selectedLayer.getBounds(), { padding: [30, 30], maxZoom: 13 });
+  } else {
+    districtMap.fitBounds(districtMapLayer.getBounds(), { padding: [20, 20] });
+  }
 }
 
 function renderDistrictContent(regionKey, districtCode) {
