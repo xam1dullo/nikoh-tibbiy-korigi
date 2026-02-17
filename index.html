@@ -403,6 +403,100 @@
   .cbtn-tg  { background: #0088cc; color: #fff; }
   .cbtn-tg:hover  { background: #0077b5; }
 
+  /* ─── DISTRICT OVERVIEW PANEL ─── */
+  .district-overview {
+    background: linear-gradient(145deg, #1a73e8 0%, #0f9d58 100%);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    color: #fff;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .district-overview::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .district-overview-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1rem; position: relative;
+  }
+  .district-overview-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+    backdrop-filter: blur(6px);
+  }
+  .district-overview-header h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 1.15rem; line-height: 1.2;
+  }
+  .district-overview-header .do-region {
+    font-size: 0.82rem; opacity: 0.85; font-weight: 500;
+  }
+  .district-overview .data-badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(255,255,255,0.2); border-radius: 99px;
+    padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 700;
+    backdrop-filter: blur(6px); margin-top: 0.3rem;
+  }
+  .data-badge.verified { background: rgba(15,157,88,0.35); }
+
+  /* ─── STATS ROW ─── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem; margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .stat-card .stat-num {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 1.4rem;
+    line-height: 1;
+  }
+  .stat-card .stat-label {
+    font-size: 0.65rem; opacity: 0.85;
+    margin-top: 0.25rem; font-weight: 600;
+  }
+
+  /* ─── PROGRESS TRACKER ─── */
+  .progress-tracker {
+    display: flex; align-items: center;
+    gap: 0; position: relative;
+  }
+  .progress-step {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    position: relative; z-index: 1;
+  }
+  .progress-step-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; margin-bottom: 0.3rem;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .progress-step-label {
+    font-size: 0.68rem; font-weight: 700;
+    opacity: 0.9; line-height: 1.2;
+  }
+  .progress-line {
+    flex: 0 0 auto;
+    width: 40px; height: 2px;
+    background: rgba(255,255,255,0.3);
+    margin-bottom: 1.2rem;
+  }
+
   /* ─── MOBILE TWEAKS ─── */
   @media (max-width: 480px) {
     .hero { padding: 2rem 1rem 3rem; }
@@ -414,6 +508,8 @@
     .contact-btns { flex-direction: column; align-items: center; }
     .cbtn { width: 100%; max-width: 260px; justify-content: center; }
     .map-btn { flex: 1 1 auto; justify-content: center; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .progress-line { width: 20px; }
   }
 
   /* ─── ANIMATIONS ─── */
@@ -1338,7 +1434,62 @@ function renderDistrictContent(regionKey, districtCode) {
 
 // ─── UNIVERSAL DYNAMIC RENDERER (JSON dan) ───
 function renderDynamicDistrictContent(container, data) {
+  const dispensaryCount = data.dispensaries ? data.dispensaries.length : 0;
+  const testCount = data.polyclinicTests ? data.polyclinicTests.length : 0;
+  const faqCount = data.faq ? data.faq.length : 0;
+  const hasContact = data.contact && (data.contact.phone || data.contact.telegram);
+
   container.innerHTML = `
+    <!-- ─── DISTRICT OVERVIEW PANEL ─── -->
+    <div class="district-overview">
+      <div class="district-overview-header">
+        <div class="district-overview-icon">🏥</div>
+        <div>
+          <h3>${data.district_name} tumani</h3>
+          <div class="do-region">📍 ${data.region_name}</div>
+          <div class="data-badge${data.has_data ? ' verified' : ''}">
+            ${data.has_data ? '✅ Tasdiqlangan ma\'lumot' : '⏳ Ma\'lumotlar tayyorlanmoqda'}
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">${dispensaryCount}</div>
+          <div class="stat-label">Dispanser</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${testCount}</div>
+          <div class="stat-label">Tekshiruv</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${faqCount}</div>
+          <div class="stat-label">FAQ</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${hasContact ? '✓' : '—'}</div>
+          <div class="stat-label">Aloqa</div>
+        </div>
+      </div>
+
+      <div class="progress-tracker">
+        <div class="progress-step">
+          <div class="progress-step-icon">🏨</div>
+          <div class="progress-step-label">1-Qadam<br>Dispanserlar</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+          <div class="progress-step-icon">🏥</div>
+          <div class="progress-step-label">2-Qadam<br>Poliklinika</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+          <div class="progress-step-icon">📄</div>
+          <div class="progress-step-label">3-Qadam<br>Xulosa</div>
+        </div>
+      </div>
+    </div>
+
     <div class="alert alert-orange">
       <span class="alert-icon">⏰</span>
       <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
@@ -1348,7 +1499,7 @@ function renderDynamicDistrictContent(container, data) {
       <div class="section-icon si-green">🏨</div>
       <div>
         <h2>1-QADAM: Dispanserlar</h2>
-        <p>Quyidagi ${data.dispensaries.length} ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+        <p>Quyidagi ${dispensaryCount} ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
       </div>
     </div>
 
