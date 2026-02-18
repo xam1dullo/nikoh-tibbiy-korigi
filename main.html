@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikoh Tibbiy Ko'rigi — O'zbekiston</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-04CQS4RK2T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-04CQS4RK2T');
+</script>
+<script>
+// Google Analytics event tracking for key actions
+function trackGAEvent(category, action, label) {
+  if (typeof gtag === 'function') {
+    gtag('event', action, {
+      'event_category': category,
+      'event_label': label
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Map buttons (Google, Yandex, 2GIS, Navigatsiya)
+  document.body.addEventListener('click', function(e) {
+    const mapBtn = e.target.closest('.map-btn');
+    if (mapBtn) {
+      trackGAEvent('Map', 'map_button_click', mapBtn.textContent.trim());
+    }
+    const callBtn = e.target.closest('.btn-call');
+    if (callBtn) {
+      trackGAEvent('Contact', 'call_button_click', callBtn.textContent.trim());
+    }
+    const map2gisBtn = e.target.closest('.btn-map');
+    if (map2gisBtn) {
+      trackGAEvent('Map', '2gis_button_click', map2gisBtn.textContent.trim());
+    }
+    const tgBtn = e.target.closest('.cbtn-tg');
+    if (tgBtn) {
+      trackGAEvent('Contact', 'telegram_button_click', tgBtn.textContent.trim());
+    }
+  });
+});
+</script>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --green: #0f9d58;
+    --green-light: #e6f4ea;
+    --blue-light: #e8f0fe;
+    --orange: #f29900;
+    --orange-light: #fef3e2;
+    --red: #d93025;
+    --red-light: #fce8e6;
+    --purple: #7b2ff7;
+    --purple-light: #f0e8ff;
+    --bg: #f8faff;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --shadow: 0 2px 12px rgba(26,115,232,0.08);
+    --shadow-hover: 0 8px 24px rgba(26,115,232,0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Rubik', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── HERO HEADER ─── */
+  .hero {
+    background: linear-gradient(145deg, #1a73e8 0%, #0f9d58 100%);
+    color: #fff;
+    padding: 2.5rem 1.25rem 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-icon { font-size: 3.5rem; margin-bottom: 0.75rem; display: block; animation: pulse-icon 2s ease-in-out infinite; }
+  @keyframes pulse-icon { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .hero h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 900;
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+  }
+  .hero p { font-size: 0.95rem; opacity: 0.9; margin-bottom: 1.25rem; }
+  .hero-steps {
+    display: flex; justify-content: center; gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .hero-step {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 99px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    backdrop-filter: blur(6px);
+  }
+
+  /* ─── HOW TO USE BANNER ─── */
+  .how-banner {
+    background: #fff8e1;
+    border-bottom: 2px solid #ffe082;
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+  .how-banner p { font-size: 0.85rem; color: #5f4200; }
+  .how-banner strong { color: #e65100; }
+
+  /* ─── CONTAINER ─── */
+  .container { max-width: 700px; margin: 0 auto; padding: 1.25rem; }
+
+  /* ─── SECTION TITLES ─── */
+  .section-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin: 2rem 0 1rem;
+  }
+  .section-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+  }
+  .si-green { background: var(--green-light); }
+  .si-blue  { background: var(--blue-light); }
+  .section-header h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem; font-weight: 800; color: var(--text);
+  }
+  .section-header p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ─── MAP STYLES ─── */
+  #map {
+    height: 400px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .loading {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 400px; color: var(--muted);
+  }
+  .loading-spinner {
+    width: 40px; height: 40px; border: 4px solid var(--border);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* ─── SEARCH BAR ─── */
+  .search-bar {
+    position: relative; margin-bottom: 1.5rem;
+  }
+  .search-input {
+    width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 2px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 1rem; font-family: 'Rubik', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus {
+    outline: none; border-color: var(--primary);
+  }
+  .search-icon {
+    position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);
+    font-size: 1.2rem; color: var(--muted);
+  }
+
+  /* ─── REGION CARDS ─── */
+  .regions-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .region-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 1.2rem; border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .region-card:hover {
+    box-shadow: var(--shadow-hover); transform: translateY(-2px);
+  }
+  .region-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .region-districts { font-size: 0.85rem; color: var(--muted); }
+
+  /* ─── DISTRICT CARDS ─── */
+  .districts-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .district-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 1rem; border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .district-card:hover {
+    box-shadow: var(--shadow-hover); transform: translateY(-2px);
+  }
+  .district-name { font-weight: 600; font-size: 1rem; }
+  .district-code { font-size: 0.8rem; color: var(--muted); }
+
+  /* ─── BREADCRUMBS ─── */
+  .breadcrumbs {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 1.5rem; font-size: 0.9rem;
+  }
+  .breadcrumb-link {
+    color: var(--primary); text-decoration: none; cursor: pointer;
+  }
+  .breadcrumb-link:hover { text-decoration: underline; }
+  .breadcrumb-separator { color: var(--muted); }
+
+  /* ─── VIEW STATES ─── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ─── ALERT BOXES ─── */
+  .alert {
+    display: flex; gap: 0.75rem; align-items: flex-start;
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+  .alert-blue { background: var(--blue-light); color: #1e3a5f; border-left: 4px solid var(--primary); }
+  .alert-green { background: var(--green-light); color: #0c4a21; border-left: 4px solid var(--green); }
+  .alert-orange { background: var(--orange-light); color: #7c3d00; border-left: 4px solid var(--orange); }
+  .alert-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+  /* ─── DISPANSER/FACILITY CARDS ─── */
+  .disp-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: box-shadow 0.25s, transform 0.25s;
+    border: 1px solid var(--border);
+  }
+  .disp-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+  .disp-card-top {
+    padding: 1rem 1.1rem 0.85rem;
+    display: flex; gap: 0.85rem; align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+  }
+  .disp-num {
+    width: 36px; height: 36px; border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-weight: 900;
+    font-size: 1rem; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .n1 { background: linear-gradient(135deg,#f093fb,#f5576c); }
+  .n2 { background: linear-gradient(135deg,#4facfe,#00f2fe); }
+  .n3 { background: linear-gradient(135deg,#43e97b,#38f9d7); }
+  .n4 { background: linear-gradient(135deg,#fa709a,#fee140); }
+  .disp-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem; line-height: 1.3; }
+  .disp-subtitle { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .disp-body { padding: 0.9rem 1.1rem; }
+  .info-item {
+    display: flex; gap: 0.6rem; align-items: flex-start;
+    margin-bottom: 0.55rem; font-size: 0.875rem;
+  }
+  .info-item:last-child { margin-bottom: 0; }
+  .info-item .emoji { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .info-item .label { font-size: 0.72rem; color: var(--muted); font-weight: 600; min-width: 55px; margin-top: 0.15rem; }
+  .info-item .value { color: var(--text); font-weight: 500; line-height: 1.4; }
+  .time-badge {
+    display: inline-block;
+    background: var(--green-light); color: var(--green);
+    border-radius: 6px; padding: 0.15rem 0.5rem;
+    font-size: 0.78rem; font-weight: 700;
+  }
+
+  .disp-actions {
+    padding: 0.75rem 1.1rem 1rem;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1rem; border-radius: var(--radius-sm);
+    font-size: 0.82rem; font-weight: 700;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: all 0.2s; font-family: 'Rubik', sans-serif;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-call { background: var(--green-light); color: #065f46; }
+  .btn-call:hover { background: var(--green); color: #fff; }
+  .btn-map { background: var(--orange-light); color: #92400e; }
+  .btn-map:hover { background: var(--orange); color: #fff; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+
+  /* ─── MAP BLOCK ─── */
+  .map-block {
+    margin: 0 1.1rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%);
+    border: 1px solid #c8e6c9;
+    padding: 1rem;
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .map-block .map-addr {
+    font-size: 0.82rem; color: #374151; font-weight: 500;
+    display: flex; gap: 0.4rem; align-items: flex-start;
+  }
+  .map-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .map-btn {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.5rem 0.9rem; border-radius: 8px;
+    font-size: 0.78rem; font-weight: 700;
+    text-decoration: none; transition: all 0.18s;
+  }
+  .map-btn:active { transform: scale(0.96); }
+  .map-btn-g { background: #fff; border: 1.5px solid #4285f4; color: #1a56db; }
+  .map-btn-g:hover { background: #4285f4; color: #fff; }
+  .map-btn-2 { background: #fff; border: 1.5px solid #0f9d58; color: #065f46; }
+  .map-btn-2:hover { background: #0f9d58; color: #fff; }
+  .map-btn-n { background: #fff; border: 1.5px solid #f29900; color: #92400e; }
+  .map-btn-n:hover { background: #f29900; color: #fff; }
+
+  /* ─── POLYCLINIC STEPS ─── */
+  .poly-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .poly-step {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .poly-step:last-child { border-bottom: none; }
+  .poly-step:hover { background: var(--blue-light); }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--primary); color: #fff;
+    font-family: 'Nunito', sans-serif; font-weight: 800;
+    font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-info { flex: 1; }
+  .step-info .step-name { font-weight: 700; font-size: 0.9rem; }
+  .step-info .step-loc {
+    font-size: 0.78rem; color: var(--muted);
+    margin-top: 0.2rem;
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+  .step-tag {
+    background: var(--blue-light);
+    color: var(--primary);
+    border-radius: 6px; padding: 0.1rem 0.45rem;
+    font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0; margin-top: 0.15rem;
+  }
+  .step-tag.special { background: var(--orange-light); color: #92400e; }
+
+  /* ─── FAQ / TIPS ─── */
+  .tip-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .tip-item {
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .tip-item:last-child { border-bottom: none; }
+  .tip-q {
+    display: flex; align-items: center; justify-content: space-between;
+    font-weight: 700; font-size: 0.9rem; gap: 0.75rem;
+  }
+  .tip-q span { flex: 1; }
+  .tip-toggle { color: var(--primary); font-size: 1.1rem; flex-shrink: 0; transition: transform 0.25s; }
+  .tip-a { display: none; font-size: 0.83rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.6; }
+  .tip-item.open .tip-a { display: block; }
+  .tip-item.open .tip-toggle { transform: rotate(45deg); }
+
+  /* ─── CONTACT CARD ─── */
+  .contact-card {
+    background: linear-gradient(145deg, #1a73e8, #0f9d58);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .contact-card .cc-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .contact-card h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 1.15rem; margin-bottom: 0.3rem;
+  }
+  .contact-card p { font-size: 0.85rem; opacity: 0.88; margin-bottom: 1.25rem; }
+  .contact-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .cbtn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.4rem; border-radius: 99px;
+    font-size: 0.9rem; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+    font-family: 'Rubik', sans-serif;
+  }
+  .cbtn:active { transform: scale(0.97); }
+  .cbtn-tel { background: #fff; color: var(--primary); }
+  .cbtn-tel:hover { background: #e8f0fe; }
+  .cbtn-tg  { background: #0088cc; color: #fff; }
+  .cbtn-tg:hover  { background: #0077b5; }
+
+  /* ─── DISTRICT OVERVIEW PANEL ─── */
+  .district-overview {
+    background: linear-gradient(145deg, #1a73e8 0%, #0f9d58 100%);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.25rem;
+    color: #fff;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .district-overview::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .district-overview-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1rem; position: relative;
+  }
+  .district-overview-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; flex-shrink: 0;
+    backdrop-filter: blur(6px);
+  }
+  .district-overview-header h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 1.15rem; line-height: 1.2;
+  }
+  .district-overview-header .do-region {
+    font-size: 0.82rem; opacity: 0.85; font-weight: 500;
+  }
+  .district-overview .data-badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: rgba(255,255,255,0.2); border-radius: 99px;
+    padding: 0.2rem 0.7rem; font-size: 0.72rem; font-weight: 700;
+    backdrop-filter: blur(6px); margin-top: 0.3rem;
+  }
+  .data-badge.verified { background: rgba(15,157,88,0.35); }
+
+  /* ─── STATS ROW ─── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem; margin-bottom: 1.25rem;
+    position: relative;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 0.65rem 0.5rem;
+    text-align: center;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .stat-card .stat-num {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 1.4rem;
+    line-height: 1;
+  }
+  .stat-card .stat-label {
+    font-size: 0.65rem; opacity: 0.85;
+    margin-top: 0.25rem; font-weight: 600;
+  }
+
+  /* ─── PROGRESS TRACKER ─── */
+  .progress-tracker {
+    display: flex; align-items: center;
+    gap: 0; position: relative;
+  }
+  .progress-step {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    position: relative; z-index: 1;
+  }
+  .progress-step-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; margin-bottom: 0.3rem;
+    border: 2px solid rgba(255,255,255,0.4);
+  }
+  .progress-step-label {
+    font-size: 0.68rem; font-weight: 700;
+    opacity: 0.9; line-height: 1.2;
+  }
+  .progress-line {
+    flex: 0 0 auto;
+    width: 40px; height: 2px;
+    background: rgba(255,255,255,0.3);
+    margin-bottom: 1.2rem;
+  }
+
+  /* ─── MOBILE TWEAKS ─── */
+  @media (max-width: 480px) {
+    .hero { padding: 2rem 1rem 3rem; }
+    .hero h1 { font-size: 1.5rem; }
+    .regions-grid { grid-template-columns: 1fr; }
+    .districts-grid { grid-template-columns: 1fr; }
+    .disp-actions { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+    .contact-btns { flex-direction: column; align-items: center; }
+    .cbtn { width: 100%; max-width: 260px; justify-content: center; }
+    .map-btn { flex: 1 1 auto; justify-content: center; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .progress-line { width: 20px; }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* ─── BACK TO TOP ─── */
+  .back-top {
+    position: fixed; bottom: 1.25rem; right: 1.25rem;
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; text-decoration: none;
+    box-shadow: 0 4px 14px rgba(26,115,232,0.4);
+    opacity: 0; pointer-events: none;
+    transition: all 0.3s; z-index: 99;
+  }
+  .back-top.show { opacity: 1; pointer-events: all; }
+  .back-top:hover { background: var(--primary-dark); transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<!-- BACK TO TOP -->
+<a href="#" class="back-top" id="backTop" aria-label="Yuqoriga qaytish">↑</a>
+
+<!-- ─── HERO ─── -->
+<header class="hero" id="top">
+  <span class="hero-icon">🏥</span>
+  <h1>Nikoh Tibbiy Ko'rigi</h1>
+  <p>O'zbekiston — nikohlanuvchi shaxslar uchun to'liq qo'llanma</p>
+  <div class="hero-steps">
+    <span class="hero-step">🗺 14 ta Viloyat</span>
+    <span class="hero-step">📍 200+ Tuman</span>
+    <span class="hero-step">🔍 Qidiruv</span>
+    <span class="hero-step">📱 Mobil</span>
+  </div>
+</header>
+
+<!-- ─── HOW TO USE ─── -->
+<div class="how-banner">
+  <p>📌 <strong>Qanday foydalanish:</strong> <strong>Viloyatni</strong> tanlang, so'ng <strong>tumaningizni</strong> bosing. Har bir tuman uchun to'liq ma'lumot berilgan.</p>
+</div>
+
+<!-- ─── SEARCH BAR ─── -->
+<div class="container">
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" class="search-input" placeholder="Viloyat yoki tuman nomini kiriting...">
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ─── MAIN VIEW ─── -->
+  <div id="mainView" class="view active">
+    <div id="mapContainer">
+      <div id="map"></div>
+    </div>
+
+    <div class="regions-grid" id="regionsGrid"></div>
+  </div>
+
+  <!-- ─── REGION VIEW ─── -->
+  <div id="regionView" class="view">
+    <div class="breadcrumbs">
+      <span class="breadcrumb-link" onclick="showMainView()">🏠 Bosh sahifa</span>
+      <span class="breadcrumb-separator">›</span>
+      <span id="regionBreadcrumb"></span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">📍</div>
+      <div>
+        <h2 id="regionTitle"></h2>
+        <p id="regionSubtitle">Quyidagi tumanlardan birini tanlang</p>
+      </div>
+    </div>
+
+    <div class="districts-grid" id="districtsGrid"></div>
+  </div>
+
+  <!-- ─── DISTRICT VIEW ─── -->
+  <div id="districtView" class="view">
+    <div class="breadcrumbs">
+      <span class="breadcrumb-link" onclick="showMainView()">🏠 Bosh sahifa</span>
+      <span class="breadcrumb-separator">›</span>
+      <span class="breadcrumb-link" id="districtRegionBreadcrumb"></span>
+      <span class="breadcrumb-separator">›</span>
+      <span id="districtBreadcrumb"></span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">🏥</div>
+      <div>
+        <h2 id="districtTitle"></h2>
+        <p>Nikoh tibbiy ko'rigi uchun to'liq ma'lumot</p>
+      </div>
+    </div>
+
+    <div id="districtContent"></div>
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer style="background: #111827; color: #9ca3af; padding: 2rem 1.25rem; text-align: center; margin-top: 2rem;">
+  <div style="background: #1f2937; border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+    <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: #6b7280; margin-bottom: 0.5rem;">🛠️ Sayt ishlab chiquvchisi</div>
+    <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: #f9fafb; margin-bottom: 0.75rem;">Xamidullo Xudoyberdiyev</div>
+    <a href="https://t.me/xamidullo_xudoyberdiyev" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #0088cc; color: #fff; border-radius: 99px; padding: 0.5rem 1.1rem; font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: background 0.2s;">
+      ✈️ @xamidullo_xudoyberdiyev
+    </a>
+  </div>
+  <div style="height: 1px; background: #374151; margin: 1.25rem 0;"></div>
+  <p style="font-size: 0.75rem; color: #4b5563;">© 2025 O'zbekiston Nikoh Tibbiy Ko'rigi</p>
+  <p style="font-size: 0.75rem; color: #4b5563; margin-top: 0.4rem;">Nikoh tibbiy ko'rigi xizmati — Barcha huquqlar himoyalangan</p>
+</footer>
+
+<!-- GeoJSON Data Files -->
+<script type="text/javascript" src="data/regions.js"></script>
+<script type="text/javascript" src="data/qoraqalpogiston.js"></script>
+<script type="text/javascript" src="data/andijon.js"></script>
+<script type="text/javascript" src="data/buxoro.js"></script>
+<script type="text/javascript" src="data/fargona.js"></script>
+<script type="text/javascript" src="data/jizzax.js"></script>
+<script type="text/javascript" src="data/namangan.js"></script>
+<script type="text/javascript" src="data/navoiy.js"></script>
+<script type="text/javascript" src="data/qashqadaryo.js"></script>
+<script type="text/javascript" src="data/samarqand.js"></script>
+<script type="text/javascript" src="data/sirdaryo.js"></script>
+<script type="text/javascript" src="data/surxondaryo.js"></script>
+<script type="text/javascript" src="data/toshkent.js"></script>
+<script type="text/javascript" src="data/xorazm.js"></script>
+
+<script>
+// ─── APP DATA (hardcoded REGIONS — endi GeoJSON dan olinadi) ───
+const REGIONS = {
+  toshkent_shahar: {
+    name: "Toshkent shahri",
+    districts: [
+      {name: "Bektemir", code: "bektemir"},
+      {name: "Chilonzor", code: "chilonzor"},
+      {name: "Mirabad", code: "mirabad"},
+      {name: "Mirobod", code: "mirobod"},
+      {name: "Olmazor", code: "olmazor"},
+      {name: "Sergeli", code: "sergeli"},
+      {name: "Shayhontohur", code: "shayhontohur"},
+      {name: "Uchtepa", code: "uchtepa"},
+      {name: "Yakkasaroy", code: "yakkasaroy"},
+      {name: "Yangihayon", code: "yangihayon"},
+      {name: "Yashnobod", code: "yashnobod"},
+      {name: "Yunusobod", code: "yunusobod"}
+    ]
+  },
+  andijon: {
+    name: "Andijon viloyati",
+    districts: [
+      {name: "Andijon shahar", code: "andijon_shahar"},
+      {name: "Andijon tuman", code: "andijon_tuman"},
+      {name: "Asaka", code: "asaka"},
+      {name: "Baliqchi", code: "baliqchi"},
+      {name: "Bo'ston", code: "boston"},
+      {name: "Buloqboshi", code: "buloqboshi"},
+      {name: "Izboskan", code: "izboskan"},
+      {name: "Jalaquduq", code: "jalaquduq"},
+      {name: "Qo'rg'ontepa", code: "qorgontepa"},
+      {name: "Marhamat", code: "marhamat"},
+      {name: "Oltinko'l", code: "oltinkol"},
+      {name: "Paxtaobod", code: "paxtaobod"},
+      {name: "Shahrixon", code: "shahrixon"},
+      {name: "Ulugnor", code: "ulugnor"},
+      {name: "Xo'jaobod", code: "xojaobod"}
+    ]
+  },
+  buxoro: {
+    name: "Buxoro viloyati",
+    districts: [
+      {name: "Buxoro shahar", code: "buxoro_shahar"},
+      {name: "Buxoro tuman", code: "buxoro_tuman"},
+      {name: "Vobkent", code: "vobkent"},
+      {name: "G'ijduvon", code: "gijduvon"},
+      {name: "Jondor", code: "jondor"},
+      {name: "Kogon shahar", code: "kogon_shahar"},
+      {name: "Kogon tuman", code: "kogon_tuman"},
+      {name: "Qorako'l", code: "qorakol"},
+      {name: "Qorovulbozor", code: "qorovulbozor"},
+      {name: "Romitan", code: "romitan"},
+      {name: "Shofirkon", code: "shofirkon"}
+    ]
+  },
+  fargona: {
+    name: "Farg'ona viloyati",
+    districts: [
+      {name: "Farg'ona shahar", code: "fargona_shahar"},
+      {name: "Marg'ilon", code: "margilon"},
+      {name: "Quvasoy", code: "quvasoy"},
+      {name: "Qo'qon", code: "qoqon"},
+      {name: "Oltiariq", code: "oltiariq"},
+      {name: "Bag'dod", code: "bagdod"},
+      {name: "Beshariq", code: "beshariq"},
+      {name: "Buvayda", code: "buvayda"},
+      {name: "Dang'ara", code: "dangara"},
+      {name: "Farg'ona tuman", code: "fargona_tuman"},
+      {name: "Furqat", code: "furqat"},
+      {name: "Qo'shtepa", code: "qoshtepa"},
+      {name: "Quva", code: "quva"},
+      {name: "Rishton", code: "rishton"},
+      {name: "So'x", code: "sox"},
+      {name: "Toshloq", code: "toshloq"},
+      {name: "Uchko'prik", code: "uchkoprik"},
+      {name: "O'zbekiston", code: "ozbekiston"},
+      {name: "Yozyovon", code: "yozyovon"}
+    ]
+  },
+  jizzax: {
+    name: "Jizzax viloyati",
+    districts: [
+      {name: "Jizzax shahar", code: "jizzax_shahar"},
+      {name: "Arnasoy", code: "arnasoy"},
+      {name: "Baxtiyor", code: "baxtiyor"},
+      {name: "Do'stlik", code: "dostlik"},
+      {name: "Forish", code: "forish"},
+      {name: "G'allaorol", code: "gallaorol"},
+      {name: "Sharof Rashidov", code: "sharof_rashidov"},
+      {name: "Mirzacho'l", code: "mirzachol"},
+      {name: "Paxtakor", code: "paxtakor"},
+      {name: "Yangiobod", code: "yangiobod"},
+      {name: "Zafarobod", code: "zafarobod"},
+      {name: "Zarbdor", code: "zarbdor"}
+    ]
+  },
+  xorazm: {
+    name: "Xorazm viloyati",
+    districts: [
+      {name: "Urganch shahar", code: "urganch_shahar"},
+      {name: "Xiva shahar", code: "xiva_shahar"},
+      {name: "Bog'ot", code: "bogot"},
+      {name: "Gurlan", code: "gurlan"},
+      {name: "Qo'shko'pir", code: "qoshkopir"},
+      {name: "Shovot", code: "shovot"},
+      {name: "Urganch tuman", code: "urganch_tuman"},
+      {name: "Xazorasp", code: "xazorasp"},
+      {name: "Xiva tuman", code: "xiva_tuman"},
+      {name: "Yangiariq", code: "yangiariq"},
+      {name: "Yangibozor", code: "yangibozor"}
+    ]
+  },
+  namangan: {
+    name: "Namangan viloyati",
+    districts: [
+      {name: "Namangan shahar", code: "namangan_shahar"},
+      {name: "Chortoq", code: "chortoq"},
+      {name: "Chust", code: "chust"},
+      {name: "Kosonsoy", code: "kosonsoy"},
+      {name: "Mingbuloq", code: "mingbuloq"},
+      {name: "Namangan tuman", code: "namangan_tuman"},
+      {name: "Norin", code: "norin"},
+      {name: "Pop", code: "pop"},
+      {name: "To'raqo'rg'on", code: "toraqorgon"},
+      {name: "Uchqo'rg'on", code: "uchqorgon"},
+      {name: "Uychi", code: "uychi"},
+      {name: "Yangiqo'rg'on", code: "yangiqorgon"}
+    ]
+  },
+  navoiy: {
+    name: "Navoiy viloyati",
+    districts: [
+      {name: "Navoiy shahar", code: "navoiy_shahar"},
+      {name: "Zarafshon", code: "zarafshon"},
+      {name: "Karmana", code: "karmana"},
+      {name: "Konimex", code: "konimex"},
+      {name: "Navbahor", code: "navbahor"},
+      {name: "Nurota", code: "nurota"},
+      {name: "Qiziltepa", code: "qiziltepa"},
+      {name: "Tomdi", code: "tomdi"},
+      {name: "Uchquduq", code: "uchquduq"}
+    ]
+  },
+  qashqadaryo: {
+    name: "Qashqadaryo viloyati",
+    districts: [
+      {name: "Qarshi shahar", code: "qarshi_shahar"},
+      {name: "Shahrisabz shahar", code: "shahrisabz_shahar"},
+      {name: "Chiroqchi", code: "chiroqchi"},
+      {name: "Dehqonobod", code: "dehqonobod"},
+      {name: "G'uzor", code: "guzor"},
+      {name: "Qarshi tuman", code: "qarshi_tuman"},
+      {name: "Kasbi", code: "kasbi"},
+      {name: "Kitob", code: "kitob"},
+      {name: "Koson", code: "koson"},
+      {name: "Mirishkor", code: "mirishkor"},
+      {name: "Muborak", code: "muborak"},
+      {name: "Nishon", code: "nishon"},
+      {name: "Qamashi", code: "qamashi"},
+      {name: "Shahrisabz tuman", code: "shahrisabz_tuman"},
+      {name: "Yakkabog'", code: "yakkabog"}
+    ]
+  },
+  samarqand: {
+    name: "Samarqand viloyati",
+    districts: [
+      {name: "Samarqand shahar", code: "samarqand_shahar"},
+      {name: "Kattaqo'rg'on", code: "kattaqorgon"},
+      {name: "Bulungur", code: "bulungur"},
+      {name: "Ishtixon", code: "ishtixon"},
+      {name: "Jomboy", code: "jomboy"},
+      {name: "Kattaqo'rg'on tuman", code: "kattaqorgon_tuman"},
+      {name: "Narpay", code: "narpay"},
+      {name: "Nurobod", code: "nurobod"},
+      {name: "Oqdaryo", code: "oqdaryo"},
+      {name: "Paxtachi", code: "paxtachi"},
+      {name: "Payariq", code: "payariq"},
+      {name: "Pastdarg'om", code: "pastdargom"},
+      {name: "Qo'shrabot", code: "qoshrabot"},
+      {name: "Samarqand tuman", code: "samarqand_tuman"},
+      {name: "Toyloq", code: "toyloq"},
+      {name: "Urgut", code: "urgut"}
+    ]
+  },
+  sirdaryo: {
+    name: "Sirdaryo viloyati",
+    districts: [
+      {name: "Guliston shahar", code: "guliston_shahar"},
+      {name: "Shirin shahar", code: "shirin_shahar"},
+      {name: "Yangiyer", code: "yangiyer"},
+      {name: "Boyovut", code: "boyovut"},
+      {name: "Guliston tuman", code: "guliston_tuman"},
+      {name: "Xovos", code: "xovos"},
+      {name: "Mirzaobod", code: "mirzaobod"},
+      {name: "Oqoltin", code: "oqoltin"},
+      {name: "Sardoba", code: "sardoba"},
+      {name: "Sayxunobod", code: "sayxunobod"},
+      {name: "Sirdaryo tuman", code: "sirdaryo_tuman"}
+    ]
+  },
+  surxondaryo: {
+    name: "Surxondaryo viloyati",
+    districts: [
+      {name: "Termiz shahar", code: "termiz_shahar"},
+      {name: "Angor", code: "angor"},
+      {name: "Boysun", code: "boysun"},
+      {name: "Denov", code: "denov"},
+      {name: "Jarqo'rg'on", code: "jarqorgon"},
+      {name: "Qiziriq", code: "qiziriq"},
+      {name: "Qumqo'rg'on", code: "qumqorgon"},
+      {name: "Muzrabot", code: "muzrabot"},
+      {name: "Oltinsoy", code: "oltinsoy"},
+      {name: "Sariosiyo", code: "sariosiyo"},
+      {name: "Sherobod", code: "sherobod"},
+      {name: "Sho'rchi", code: "shorchi"},
+      {name: "Termiz tuman", code: "termiz_tuman"},
+      {name: "Uzun", code: "uzun"},
+      {name: "Bandixon", code: "bandixon"}
+    ]
+  },
+  toshkent_viloyat: {
+    name: "Toshkent viloyati",
+    districts: [
+      {name: "Angren", code: "angren"},
+      {name: "Bekobod shahar", code: "bekobod_shahar"},
+      {name: "Chirchiq shahar", code: "chirchiq_shahar"},
+      {name: "Olmaliq", code: "olmaliq"},
+      {name: "Ohangaron shahar", code: "ohangaron_shahar"},
+      {name: "Akkurgan", code: "akkurgan"},
+      {name: "Bekobod tuman", code: "bekobod_tuman"},
+      {name: "Bo'ka", code: "boka"},
+      {name: "Bo'stonliq", code: "bostonliq"},
+      {name: "Chinoz", code: "chinoz"},
+      {name: "Chirchiq tuman", code: "chirchiq_tuman"},
+      {name: "Qibray", code: "qibray"},
+      {name: "Ohangaron tuman", code: "ohangaron_tuman"},
+      {name: "Oqqo'rg'on", code: "oqqorgon"},
+      {name: "Parkent", code: "parkent"},
+      {name: "Piskent", code: "piskent"},
+      {name: "Quyi Chirchiq", code: "quyi_chirchiq"},
+      {name: "Yangiyul", code: "yangiyul"},
+      {name: "Yuqori Chirchiq", code: "yuqori_chirchiq"},
+      {name: "Zangiota", code: "zangiota"}
+    ]
+  },
+  qoraqalpogiston: {
+    name: "Qoraqalpog'iston Respublikasi",
+    districts: [
+      {name: "Nukus shahar", code: "nukus"},
+      {name: "Amudaryo", code: "amudaryo"},
+      {name: "Beruniy", code: "beruniy"},
+      {name: "Chimboy", code: "chimboy"},
+      {name: "Ellikqala", code: "ellikqala"},
+      {name: "Kegeyli", code: "kegeyli"},
+      {name: "Qanliko'l", code: "qanlikol"},
+      {name: "Qo'ng'irot", code: "qongirot"},
+      {name: "Qoraozo'n", code: "qoraozon"},
+      {name: "Mo'ynoq", code: "moynoq"},
+      {name: "Nukus tuman", code: "nukus_tuman"},
+      {name: "Shumanay", code: "shumanay"},
+      {name: "Taxtako'pir", code: "taxtakopir"},
+      {name: "To'rtko'l", code: "tortkol"},
+      {name: "Xo'jayli", code: "xojayli"},
+      {name: "Bozataw", code: "bozataw"}
+    ]
+  }
+};
+
+// ─── APP STATE ───
+let map = null;
+let currentView = 'main';
+let currentRegion = null;
+let currentDistrict = null;
+let geojsonLayer = null;
+let searchData = [];
+let mapLevel = 'regions'; // 'regions' or region key
+
+// GeoJSON paths mapping
+const GEOJSON_PATHS = {
+  regions: typeof regions !== 'undefined' ? regions : null,
+  qoraqalpogiston: typeof qoraqalpogiston !== 'undefined' ? qoraqalpogiston : null,
+  andijon: typeof andijon !== 'undefined' ? andijon : null,
+  buxoro: typeof buxoro !== 'undefined' ? buxoro : null,
+  fargona: typeof fargona !== 'undefined' ? fargona : null,
+  jizzax: typeof jizzax !== 'undefined' ? jizzax : null,
+  namangan: typeof namangan !== 'undefined' ? namangan : null,
+  navoiy: typeof navoiy !== 'undefined' ? navoiy : null,
+  qashqadaryo: typeof qashqadaryo !== 'undefined' ? qashqadaryo : null,
+  samarqand: typeof samarqand !== 'undefined' ? samarqand : null,
+  sirdaryo: typeof sirdaryo !== 'undefined' ? sirdaryo : null,
+  surxondaryo: typeof surxondaryo !== 'undefined' ? surxondaryo : null,
+  toshkent: typeof toshkent !== 'undefined' ? toshkent : null,
+  xorazm: typeof xorazm !== 'undefined' ? xorazm : null
+};
+
+// Region name → REGIONS key mapping (from GeoJSON feature name)
+const REGION_NAME_MAP = {
+  'toshkent sh.': 'toshkent_shahar',
+  'toshkent vil.': 'toshkent_viloyat',
+  'andijon vil.': 'andijon',
+  'buxoro vil.': 'buxoro',
+  "farg'ona vil.": 'fargona',
+  'jizzax vil.': 'jizzax',
+  'xorazm vil.': 'xorazm',
+  'namangan vil.': 'namangan',
+  'navoiy vil.': 'navoiy',
+  'qashqadaryo vil.': 'qashqadaryo',
+  'samarqand vil.': 'samarqand',
+  'sirdaryo vil.': 'sirdaryo',
+  'surxondaryo vil.': 'surxondaryo',
+  "qoraqalpog'iston res.": 'qoraqalpogiston', 'qoraqalpogiston': 'qoraqalpogiston'
+};
+
+// Region key → GeoJSON path key (for district drill-down)
+const REGION_GEOJSON_MAP = {
+  toshkent_shahar: 'toshkent',
+  toshkent_viloyat: 'toshkent',
+  andijon: 'andijon',
+  buxoro: 'buxoro',
+  fargona: 'fargona',
+  jizzax: 'jizzax',
+  xorazm: 'xorazm',
+  namangan: 'namangan',
+  navoiy: 'navoiy',
+  qashqadaryo: 'qashqadaryo',
+  samarqand: 'samarqand',
+  sirdaryo: 'sirdaryo',
+  surxondaryo: 'surxondaryo',
+  qoraqalpogiston: 'qoraqalpogiston'
+};
+
+// ─── INITIALIZE APP ───
+document.addEventListener('DOMContentLoaded', function() {
+  initializeApp();
+});
+
+function initializeApp() {
+  initializeMap();
+  loadRegionsData();
+  initializeSearch();
+  initializeRouting();
+  loadAnimations();
+}
+
+// ─── MAP INITIALIZATION ───
+function initializeMap() {
+  const mapDiv = document.getElementById('map');
+  mapDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Xarita yuklanmoqda...</div></div>';
+
+  map = L.map('map', {
+    center: [41.3, 64.5],
+    zoom: 6,
+    zoomControl: true
+  });
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+
+  showRegionsOnMap();
+}
+
+// ─── COLORS ───
+const MAP_COLORS = [
+  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+  '#F8C471', '#82E0AA', '#F1948A', '#AED6F1', '#D2B4DE'
+];
+
+function getRegionColor(index) {
+  return MAP_COLORS[index % MAP_COLORS.length];
+}
+
+// ─── SHOW REGIONS ON MAP ───
+function showRegionsOnMap() {
+  if (!GEOJSON_PATHS.regions) {
+    showMapFallback();
+    return;
+  }
+
+  if (geojsonLayer) {
+    map.removeLayer(geojsonLayer);
+  }
+
+  mapLevel = 'regions';
+  let colorIndex = 0;
+
+  geojsonLayer = L.geoJSON(GEOJSON_PATHS.regions, {
+    style: function(feature) {
+      return {
+        fillColor: getRegionColor(colorIndex++),
+        weight: 2,
+        opacity: 1,
+        color: '#75706f',
+        dashArray: '3',
+        fillOpacity: 0.7
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      const name = (feature.properties.name || '').toLowerCase();
+      const regionKey = findRegionKeyFromGeoJSON(name);
+      const regionData = regionKey ? REGIONS[regionKey] : null;
+      const displayName = regionData ? regionData.name : feature.properties.name;
+      const districtCount = regionData ? regionData.districts.length : 0;
+
+      // Tooltip with region name
+      layer.bindTooltip(displayName, {
+        permanent: false,
+        direction: 'center',
+        className: 'info'
+      });
+
+      layer.on({
+        mouseover: function(e) {
+          this.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.85
+          });
+          this.bringToFront();
+        },
+        mouseout: function(e) {
+          geojsonLayer.resetStyle(this);
+        },
+        click: function(e) {
+          if (regionKey) {
+            // Zoom to region and show districts on map
+            map.fitBounds(this.getBounds());
+            showDistrictsOnMap(regionKey);
+            showRegionView(regionKey);
+          }
+        }
+      });
+    }
+  });
+
+  geojsonLayer.addTo(map);
+  map.fitBounds(geojsonLayer.getBounds());
+}
+
+// ─── SHOW DISTRICTS ON MAP ───
+function showDistrictsOnMap(regionKey) {
+  const geoKey = REGION_GEOJSON_MAP[regionKey];
+  const districtGeoJSON = geoKey ? GEOJSON_PATHS[geoKey] : null;
+
+  if (!districtGeoJSON) return;
+
+  if (geojsonLayer) {
+    map.removeLayer(geojsonLayer);
+  }
+
+  mapLevel = regionKey;
+  let colorIndex = 0;
+
+  geojsonLayer = L.geoJSON(districtGeoJSON, {
+    style: function(feature) {
+      return {
+        fillColor: getRegionColor(colorIndex++),
+        weight: 2,
+        opacity: 1,
+        color: '#75706f',
+        dashArray: '3',
+        fillOpacity: 0.7
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      const districtName = feature.properties.name || '';
+
+      layer.bindTooltip(districtName, {
+        permanent: false,
+        direction: 'center',
+        className: 'info'
+      });
+
+      layer.on({
+        mouseover: function(e) {
+          this.setStyle({
+            weight: 5,
+            color: '#1a73e8',
+            dashArray: '',
+            fillOpacity: 0.85
+          });
+          this.bringToFront();
+        },
+        mouseout: function(e) {
+          geojsonLayer.resetStyle(this);
+        },
+        click: function(e) {
+          // Try to find matching district code
+          const districtCode = findDistrictCode(regionKey, districtName);
+          if (districtCode) {
+            showDistrictView(regionKey, districtCode);
+          }
+        }
+      });
+    }
+  });
+
+  geojsonLayer.addTo(map);
+  map.fitBounds(geojsonLayer.getBounds());
+}
+
+// ─── HELPER: find region key from GeoJSON feature name ───
+function findRegionKeyFromGeoJSON(featureName) {
+  const lower = featureName.toLowerCase().trim();
+
+  // Direct match
+  if (REGION_NAME_MAP[lower]) return REGION_NAME_MAP[lower];
+
+  // Fuzzy match
+  for (const [geoName, key] of Object.entries(REGION_NAME_MAP)) {
+    const geoFirst = geoName.split(' ')[0].replace(/[''ʻ]/g, '');
+    const featureFirst = lower.split(' ')[0].replace(/[''ʻ]/g, '');
+    if (geoFirst === featureFirst) return key;
+  }
+
+  // Fallback: try matching against REGIONS names
+  const normalized = lower.replace(/['\s\-.'ʻ]/g, '');
+  const mappings = {
+    'toshkentshahri': 'toshkent_shahar', 'toshkentsh': 'toshkent_shahar',
+    'toshkentviloyati': 'toshkent_viloyat', 'toshkentvil': 'toshkent_viloyat',
+    'andijonvil': 'andijon', 'andijon': 'andijon',
+    'buxorovil': 'buxoro', 'buxoro': 'buxoro',
+    'fargonavil': 'fargona', 'fargona': 'fargona',
+    'jizzaxvil': 'jizzax', 'jizzax': 'jizzax',
+    'xorazmvil': 'xorazm', 'xorazm': 'xorazm',
+    'namanganvil': 'namangan', 'namangan': 'namangan',
+    'navoiyvil': 'navoiy', 'navoiy': 'navoiy',
+    'qashqadaryovil': 'qashqadaryo', 'qashqadaryo': 'qashqadaryo',
+    'samarqandvil': 'samarqand', 'samarqand': 'samarqand',
+    'sirdaryovil': 'sirdaryo', 'sirdaryo': 'sirdaryo',
+    'surxondaryovil': 'surxondaryo', 'surxondaryo': 'surxondaryo',
+    'qoraqalpogistonres': 'qoraqalpogiston', 'qoraqalpogiston': 'qoraqalpogiston'
+  };
+
+  const sortedKeys = Object.keys(mappings).sort((a, b) => b.length - a.length);
+  for (const key of sortedKeys) {
+    if (normalized.includes(key)) return mappings[key];
+  }
+
+  return null;
+}
+
+// ─── HELPER: find district code from GeoJSON name ───
+function findDistrictCode(regionKey, districtName) {
+  const region = REGIONS[regionKey];
+  if (!region) return null;
+
+  const lower = districtName.toLowerCase().replace(/[''ʻ\-.']/g, '').trim();
+
+  // Try exact match on code
+  for (const d of region.districts) {
+    if (d.code === lower) return d.code;
+  }
+
+  // Try matching first word
+  const firstWord = lower.split(/[\s.]/)[0];
+  for (const d of region.districts) {
+    const dFirst = d.name.toLowerCase().replace(/[''ʻ]/g, '').split(/[\s.]/)[0];
+    if (dFirst === firstWord) return d.code;
+  }
+
+  // Try includes
+  for (const d of region.districts) {
+    const dNorm = d.name.toLowerCase().replace(/[''ʻ\-.']/g, '');
+    if (dNorm.includes(firstWord) || firstWord.includes(dNorm.split(/\s/)[0])) return d.code;
+  }
+
+  return null;
+}
+
+function showMapFallback() {
+  document.getElementById('map').innerHTML = `
+    <div class="loading">
+      <div>⚠️ Xarita yuklanmadi</div>
+      <div style="font-size: 0.8rem; margin-top: 0.5rem;">Viloyatlar ro'yxati quyida keltirilgan</div>
+    </div>
+  `;
+}
+
+// ─── DATA LOADING ───
+function loadRegionsData() {
+  buildSearchData();
+  renderRegionsGrid();
+}
+
+function buildSearchData() {
+  searchData = [];
+
+  Object.keys(REGIONS).forEach(regionKey => {
+    const region = REGIONS[regionKey];
+
+    searchData.push({
+      type: 'region',
+      name: region.name,
+      key: regionKey,
+      searchTerms: region.name.toLowerCase()
+    });
+
+    region.districts.forEach(district => {
+      searchData.push({
+        type: 'district',
+        name: district.name,
+        code: district.code,
+        regionName: region.name,
+        regionKey: regionKey,
+        searchTerms: `${district.name} ${region.name}`.toLowerCase()
+      });
+    });
+  });
+}
+
+function renderRegionsGrid() {
+  const grid = document.getElementById('regionsGrid');
+
+  grid.innerHTML = Object.keys(REGIONS).map(key => {
+    const region = REGIONS[key];
+    return `
+      <div class="region-card" onclick="showRegionView('${key}')">
+        <div class="region-name">${region.name}</div>
+        <div class="region-districts">${region.districts.length} ta tuman</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── SEARCH FUNCTIONALITY ───
+function initializeSearch() {
+  const searchInput = document.getElementById('searchInput');
+
+  searchInput.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase().trim();
+
+    if (query.length < 2) {
+      renderRegionsGrid();
+      return;
+    }
+
+    const results = searchData.filter(item =>
+      item.searchTerms.includes(query)
+    ).slice(0, 10);
+
+    renderSearchResults(results);
+  });
+}
+
+function renderSearchResults(results) {
+  const grid = document.getElementById('regionsGrid');
+
+  if (results.length === 0) {
+    grid.innerHTML = '<div style="text-align: center; color: var(--muted); padding: 2rem;">Hech narsa topilmadi</div>';
+    return;
+  }
+
+  grid.innerHTML = results.map(item => {
+    if (item.type === 'region') {
+      return `
+        <div class="region-card" onclick="showRegionView('${item.key}')">
+          <div class="region-name">📍 ${item.name}</div>
+          <div class="region-districts">Viloyat</div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="district-card" onclick="showDistrictView('${item.regionKey}', '${item.code}')">
+          <div class="district-name">🏘 ${item.name}</div>
+          <div class="district-code">${item.regionName}</div>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+// ─── VIEW MANAGEMENT ───
+function showView(viewName) {
+  document.querySelectorAll('.view').forEach(view => {
+    view.classList.remove('active');
+  });
+
+  document.getElementById(viewName + 'View').classList.add('active');
+  currentView = viewName;
+
+  window.scrollTo(0, 0);
+}
+
+function showMainView() {
+  showView('main');
+  currentRegion = null;
+  currentDistrict = null;
+
+  document.getElementById('searchInput').value = '';
+  renderRegionsGrid();
+
+  // Reset map to show all regions
+  if (map && mapLevel !== 'regions') {
+    showRegionsOnMap();
+  }
+
+  window.location.hash = '';
+}
+
+function showRegionView(regionKey) {
+  const region = REGIONS[regionKey];
+  if (!region) return;
+
+  currentRegion = regionKey;
+  showView('region');
+
+  // Update breadcrumbs
+  document.getElementById('regionBreadcrumb').textContent = region.name;
+  document.getElementById('regionTitle').textContent = region.name;
+
+  // Render districts grid
+  const districtsGrid = document.getElementById('districtsGrid');
+  districtsGrid.innerHTML = region.districts.map(district => `
+    <div class="district-card" onclick="showDistrictView('${regionKey}', '${district.code}')">
+      <div class="district-name">${district.name}</div>
+      <div class="district-code">${district.code}</div>
+    </div>
+  `).join('');
+
+  // Zoom map to districts
+  if (mapLevel !== regionKey) {
+    showDistrictsOnMap(regionKey);
+  }
+
+  // Update URL
+  window.location.hash = `region=${regionKey}`;
+}
+
+function showDistrictView(regionKey, districtCode) {
+  const region = REGIONS[regionKey];
+  const district = region.districts.find(d => d.code === districtCode);
+
+  if (!region || !district) return;
+
+  currentRegion = regionKey;
+  currentDistrict = districtCode;
+  showView('district');
+
+  // Update breadcrumbs
+  document.getElementById('districtRegionBreadcrumb').textContent = region.name;
+  document.getElementById('districtRegionBreadcrumb').onclick = () => showRegionView(regionKey);
+  document.getElementById('districtBreadcrumb').textContent = district.name;
+  document.getElementById('districtTitle').textContent = district.name;
+
+  // Render district content
+  renderDistrictContent(regionKey, districtCode);
+
+  // Update URL
+  window.location.hash = `region=${regionKey}&district=${districtCode}`;
+}
+
+function renderDistrictContent(regionKey, districtCode) {
+  const contentDiv = document.getElementById('districtContent');
+
+  // Show loading
+  contentDiv.innerHTML = `
+    <div style="text-align:center; padding:2rem;">
+      <div class="loading-spinner" style="margin:0 auto 1rem;"></div>
+      <div style="color:var(--muted);">Ma'lumotlar yuklanmoqda...</div>
+    </div>
+  `;
+
+  // Try to load from JSON file: data/districts/{regionKey}/{districtCode}.json
+  const jsonUrl = `data/districts/${regionKey}/${districtCode}.json`;
+
+  fetch(jsonUrl)
+    .then(response => {
+      if (!response.ok) throw new Error('not found');
+      return response.json();
+    })
+    .then(data => {
+      renderDynamicDistrictContent(contentDiv, data);
+    })
+    .catch(() => {
+      // No JSON file — show generic content
+      renderGenericDistrictContent(contentDiv, regionKey, districtCode);
+    });
+}
+
+// ─── UNIVERSAL DYNAMIC RENDERER (JSON dan) ───
+function renderDynamicDistrictContent(container, data) {
+  const dispensaryCount = data.dispensaries ? data.dispensaries.length : 0;
+  const testCount = data.polyclinicTests ? data.polyclinicTests.length : 0;
+  const faqCount = data.faq ? data.faq.length : 0;
+  const hasContact = data.contact && (data.contact.phone || data.contact.telegram);
+
+  container.innerHTML = `
+    <!-- ─── DISTRICT OVERVIEW PANEL ─── -->
+    <div class="district-overview">
+      <div class="district-overview-header">
+        <div class="district-overview-icon">🏥</div>
+        <div>
+          <h3>${data.district_name} tumani</h3>
+          <div class="do-region">📍 ${data.region_name}</div>
+          <div class="data-badge${data.has_data ? ' verified' : ''}">
+            ${data.has_data ? '✅ Tasdiqlangan ma\'lumot' : '⏳ Ma\'lumotlar tayyorlanmoqda'}
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num">${dispensaryCount}</div>
+          <div class="stat-label">Dispanser</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${testCount}</div>
+          <div class="stat-label">Tekshiruv</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${faqCount}</div>
+          <div class="stat-label">FAQ</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">${hasContact ? '✓' : '—'}</div>
+          <div class="stat-label">Aloqa</div>
+        </div>
+      </div>
+
+      <div class="progress-tracker">
+        <div class="progress-step">
+          <div class="progress-step-icon">🏨</div>
+          <div class="progress-step-label">1-Qadam<br>Dispanserlar</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+          <div class="progress-step-icon">🏥</div>
+          <div class="progress-step-label">2-Qadam<br>Poliklinika</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step">
+          <div class="progress-step-icon">📄</div>
+          <div class="progress-step-label">3-Qadam<br>Xulosa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-orange">
+      <span class="alert-icon">⏰</span>
+      <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">🏨</div>
+      <div>
+        <h2>1-QADAM: Dispanserlar</h2>
+        <p>Quyidagi ${dispensaryCount} ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+      </div>
+    </div>
+
+    ${data.dispensaries.map((disp, index) => `
+      <div class="disp-card">
+        <div class="disp-card-top">
+          <div class="disp-num n${(index % 4) + 1}">${disp.id}</div>
+          <div>
+            <div class="disp-title">${disp.title}</div>
+            <div class="disp-subtitle">${disp.subtitle}</div>
+          </div>
+        </div>
+        <div class="disp-body">
+          <div class="info-item">
+            <span class="emoji">📍</span>
+            <span class="label">Manzil</span>
+            <span class="value">${disp.address}${disp.addressNote ? `<br><em style="color:var(--muted);font-size:0.78rem;">${disp.addressNote}</em>` : ''}</span>
+          </div>
+          <div class="info-item">
+            <span class="emoji">🕐</span>
+            <span class="label">Qabul</span>
+            <span class="value"><span class="time-badge">${disp.hours}</span></span>
+          </div>
+          ${disp.phones && disp.phones.length ? `
+            <div class="info-item">
+              <span class="emoji">📞</span>
+              <span class="label">Telefon</span>
+              <span class="value">${disp.phones.join(' | ')}</span>
+            </div>
+          ` : ''}
+        </div>
+        ${disp.coords ? `
+          <div class="map-block">
+            <div class="map-addr">📍 ${disp.address}${disp.addressNote ? ' ' + disp.addressNote : ''}</div>
+            <div class="map-btns">
+              <a href="https://maps.google.com/?q=${disp.coords[0]},${disp.coords[1]}" target="_blank" class="map-btn map-btn-g">🗺 Google Maps</a>
+              <a href="https://yandex.com/maps/?ll=${disp.coords[1]},${disp.coords[0]}&z=17" target="_blank" class="map-btn map-btn-n">🗺 Yandex Maps</a>
+              <a href="https://2gis.uz/?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="map-btn map-btn-2">📍 2GIS</a>
+              <a href="geo:${disp.coords[0]},${disp.coords[1]}?q=${disp.coords[0]},${disp.coords[1]}" class="map-btn map-btn-n">🧭 Navigatsiya</a>
+            </div>
+          </div>
+        ` : ''}
+        <div class="disp-actions">
+          ${disp.phones && disp.phones.length ? disp.phones.map(phone => `
+            <a href="tel:+998${phone.replace(/-/g, '')}" class="btn btn-call">📞 ${phone}</a>
+          `).join('') : ''}
+          ${disp.coords ? `
+            <a href="https://2gis.uz/?m=${disp.coords[1]},${disp.coords[0]}/17" target="_blank" class="btn btn-map">🗺 2GIS xaritada</a>
+          ` : ''}
+        </div>
+      </div>
+    `).join('')}
+
+    <div class="section-header">
+      <div class="section-icon si-blue">🏥</div>
+      <div>
+        <h2>2-QADAM: Poliklinika Tekshiruvlari</h2>
+        <p>Dispanserlardan keyin, o'z poliklinikangizda quyidagi tahlillardan o'ting</p>
+      </div>
+    </div>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Pasport + propiska nusxasini</strong> olib keling. OIV tekshiruvi uchun faqat <strong>Dushanba, Chorshanba, Juma</strong> kunlari, <strong>08:00–09:00</strong> orasida boring.</span>
+    </div>
+
+    <div class="poly-card">
+      ${data.polyclinicTests.map(test => `
+        <div class="poly-step">
+          <div class="step-circle">${test.step}</div>
+          <div class="step-info">
+            <div class="step-name">${test.name}</div>
+            <div class="step-loc">${test.location}</div>
+          </div>
+          <div class="step-tag${test.special ? ' special' : ''}">${test.tag}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">📄</div>
+      <div>
+        <h2>3-QADAM: Xulosa Olish</h2>
+        <p>Barcha tekshiruvlar tugagach shu xonaga boring</p>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <span class="alert-icon">✅</span>
+      <div>
+        <strong>${data.conclusion.location}</strong><br>
+        <span style="font-size:0.82rem;">${data.conclusion.description}</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">❓</div>
+      <div>
+        <h2>Ko'p So'raladigan Savollar</h2>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      ${data.faq.map(item => `
+        <div class="tip-item" onclick="this.classList.toggle('open')">
+          <div class="tip-q"><span>${item.question}</span><span class="tip-toggle">+</span></div>
+          <div class="tip-a">${item.answer}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">📞</div>
+      <div>
+        <h2>Masul Shaxs</h2>
+        <p>Savol yoki muammo bo'lsa, darhol murojaat qiling</p>
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <div class="cc-icon">👨‍⚕️</div>
+      <h3>${data.contact.name}</h3>
+      <p>${data.contact.description}</p>
+      <div class="contact-btns">
+        ${data.contact.phone ? `<a href="tel:${data.contact.phone}" class="cbtn cbtn-tel">📞 ${data.contact.phone}</a>` : ''}
+        ${data.contact.telegram ? `<a href="https://t.me/${data.contact.telegram}" target="_blank" class="cbtn cbtn-tg">✈️ @${data.contact.telegram}</a>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderMirobodContent(container) {
+  // Redirect to dynamic loader
+  renderDistrictContent('toshkent_shahar', 'mirobod');
+}
+
+function renderGenericDistrictContent(container, regionKey, districtCode) {
+  const region = REGIONS[regionKey];
+  const district = region.districts.find(d => d.code === districtCode);
+
+  container.innerHTML = `
+    <div class="alert alert-blue">
+      <span class="alert-icon">🔄</span>
+      <span><strong>${district.name} tumani</strong> uchun aniq ma'lumotlar hozirda tayyorlanmoqda. Umumiy qo'llanmadan foydalaning.</span>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">🏨</div>
+      <div>
+        <h2>1-QADAM: Dispanserlar</h2>
+        <p>Quyidagi 4 ta dispanserga boring va muhri bosilgan ma'lumotnoma oling</p>
+      </div>
+    </div>
+
+    <div class="alert alert-orange">
+      <span class="alert-icon">⏰</span>
+      <span>Dispanserlarga <strong>ertalab erta boring</strong> — qabul vaqtlari cheklangan. Pasport va propiska nusxasini olib boring.</span>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n1">1</div>
+        <div>
+          <div class="disp-title">🔬 Dermatovenerolog</div>
+          <div class="disp-subtitle">Teri-tanosil kasalliklari dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 12:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n2">2</div>
+        <div>
+          <div class="disp-title">🫁 Ftiziator</div>
+          <div class="disp-subtitle">Ftiziateriya dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n3">3</div>
+        <div>
+          <div class="disp-title">🧠 Psixiatr</div>
+          <div class="disp-subtitle">Ruhiy-asab kasalliklari dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 16:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="disp-card">
+      <div class="disp-card-top">
+        <div class="disp-num n4">4</div>
+        <div>
+          <div class="disp-title">💊 Narkolog</div>
+          <div class="disp-subtitle">Narkologiya dispanseri</div>
+        </div>
+      </div>
+      <div class="disp-body">
+        <div class="info-item">
+          <span class="emoji">📍</span>
+          <span class="label">Manzil</span>
+          <span class="value">Mahalliy dispanser manzilini aniqlashtiring</span>
+        </div>
+        <div class="info-item">
+          <span class="emoji">🕐</span>
+          <span class="label">Qabul</span>
+          <span class="value"><span class="time-badge">08:00 – 15:00</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">🏥</div>
+      <div>
+        <h2>2-QADAM: Poliklinika Tekshiruvlari</h2>
+        <p>Dispanserlardan keyin, o'z poliklinikangizda quyidagi tahlillardan o'ting</p>
+      </div>
+    </div>
+
+    <div class="alert alert-blue">
+      <span class="alert-icon">ℹ️</span>
+      <span><strong>Pasport + propiska nusxasini</strong> olib keling. OIV tekshiruvi uchun faqat <strong>Dushanba, Chorshanba, Juma</strong> kunlari boring.</span>
+    </div>
+
+    <div class="poly-card">
+      <div class="poly-step">
+        <div class="step-circle">1</div>
+        <div class="step-info">
+          <div class="step-name">OIV tekshiruvi (117-kod)</div>
+          <div class="step-loc">🚪 Laboratoriya</div>
+        </div>
+        <div class="step-tag special">Du/Chor/Ju</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">2</div>
+        <div class="step-info">
+          <div class="step-name">Umumiy qon va qondagi qand</div>
+          <div class="step-loc">🚪 Laboratoriya</div>
+        </div>
+        <div class="step-tag">Tahlil</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">3</div>
+        <div class="step-info">
+          <div class="step-name">EKG (elektrokardiogramma)</div>
+          <div class="step-loc">🚪 Funksional diagnostika</div>
+        </div>
+        <div class="step-tag">Yurak</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">4</div>
+        <div class="step-info">
+          <div class="step-name">UTT tekshiruvi</div>
+          <div class="step-loc">🚪 Ultratovush xonasi</div>
+        </div>
+        <div class="step-tag">UZI</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">5</div>
+        <div class="step-info">
+          <div class="step-name">Ginekolog / Urolog</div>
+          <div class="step-loc">🚪 Mutaxassis xonasi</div>
+        </div>
+        <div class="step-tag">Ko'rik</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">6</div>
+        <div class="step-info">
+          <div class="step-name">Endokrinolog</div>
+          <div class="step-loc">🚪 Mutaxassis xonasi</div>
+        </div>
+        <div class="step-tag">Gormon</div>
+      </div>
+      <div class="poly-step">
+        <div class="step-circle">7</div>
+        <div class="step-info">
+          <div class="step-name">Revmatolog</div>
+          <div class="step-loc">🚪 Mutaxassis xonasi</div>
+        </div>
+        <div class="step-tag">Bo'g'im</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-green">📄</div>
+      <div>
+        <h2>3-QADAM: Xulosa Olish</h2>
+        <p>Barcha tekshiruvlar tugagach mahalliy TTB ga murojaat qiling</p>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <span class="alert-icon">✅</span>
+      <div>
+        <strong>${district.name} TTB</strong><br>
+        <span style="font-size:0.82rem;">Barcha dispanser va poliklinika ma'lumotnomalarini olib keling. Shu yerda yakuniy tibbiy xulosa beriladi.</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-icon si-blue">📞</div>
+      <div>
+        <h2>Ma'lumot Olish</h2>
+        <p>Aniq ma'lumot olish uchun mahalliy TTB ga murojaat qiling</p>
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <div class="cc-icon">🏥</div>
+      <h3>${district.name} TTB</h3>
+      <p>Nikoh tibbiy ko'rigi bo'yicha ma'lumot olish uchun to'g'ridan-to'g'ri murojaat qiling</p>
+    </div>
+  `;
+}
+
+// ─── ROUTING ───
+function initializeRouting() {
+  // Handle initial hash
+  handleHashChange();
+
+  // Listen for hash changes
+  window.addEventListener('hashchange', handleHashChange);
+}
+
+function handleHashChange() {
+  const hash = window.location.hash.substring(1);
+
+  if (!hash) {
+    showMainView();
+    return;
+  }
+
+  const params = new URLSearchParams(hash);
+  const region = params.get('region');
+  const district = params.get('district');
+
+  if (region && district) {
+    showDistrictView(region, district);
+  } else if (region) {
+    showRegionView(region);
+  } else {
+    showMainView();
+  }
+}
+
+// ─── ANIMATIONS ───
+function loadAnimations() {
+  // Fade in animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // Observe fade-in elements
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Back to top button
+  const backTop = document.getElementById('backTop');
+  if (backTop) {
+    window.addEventListener('scroll', () => {
+      backTop.classList.toggle('show', window.scrollY > 400);
+    });
+
+    backTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+}
+</script>
+
+</body>
+</html>
